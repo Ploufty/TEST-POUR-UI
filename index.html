@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SH — Online Promotion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #4039c9;
+    --bg-deep: #3530b0;
+    --bg-darker: #2f2a9e;
+    --bg-light: #4b49e2;
+    --cyan: #0fd8ea;
+    --white: #ffffff;
+    --dots: #8f8cf0;
+    --radius: 6px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: "Montserrat", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--white);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  svg { display: block; }
+
+  /* ---------- Header ---------- */
+  .header {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 28px 56px;
+    background: var(--bg);
+  }
+  .socials { display: flex; gap: 18px; }
+  .socials a { opacity: .9; transition: opacity .2s, transform .2s; }
+  .socials a:hover { opacity: 1; transform: translateY(-2px); }
+  .socials svg { width: 14px; height: 14px; fill: var(--white); }
+  .nav { display: flex; gap: 32px; }
+  .nav a {
+    font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    position: relative; padding: 4px 0;
+  }
+  .nav a::after {
+    content: ""; position: absolute; left: 0; bottom: 0; height: 2px; width: 0;
+    background: var(--cyan); transition: width .25s;
+  }
+  .nav a:hover::after { width: 100%; }
+  .phone svg { width: 16px; height: 16px; fill: var(--white); }
+  .burger { display: none; background: none; border: 0; cursor: pointer; }
+  .burger span { display: block; width: 22px; height: 2px; background: var(--white); margin: 5px 0; border-radius: 2px; }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    position: relative;
+    min-height: 620px;
+    height: 62vw;
+    max-height: 700px;
+    overflow: hidden;
+  }
+  .hero-bg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .hero-content {
+    position: relative; z-index: 2;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding: 0 56px 12%;
+  }
+  .bullets { display: flex; gap: 30px; justify-self: end; margin-right: 50px; }
+  .bullet { display: flex; gap: 14px; align-items: flex-start; }
+  .bullet::before {
+    content: ""; flex: none; width: 11px; height: 11px; border-radius: 50%;
+    background: var(--white); margin-top: 2px;
+  }
+  .bullet p { font-size: 9px; font-weight: 500; line-height: 1.25; max-width: 60px; }
+
+  .logo { position: relative; width: 220px; }
+  .logo svg { width: 100%; height: auto; }
+
+  .tagline-wrap { position: relative; justify-self: start; margin-left: 20px; }
+  .tagline {
+    font-size: 9px; font-weight: 700; letter-spacing: .04em; line-height: 1.6;
+    text-transform: uppercase; margin-top: 70px;
+  }
+  .character {
+    position: absolute; left: -30px; top: -170px; width: 150px;
+    animation: float 6s ease-in-out infinite;
+  }
+  @keyframes float { 50% { transform: translateY(-8px); } }
+
+  /* ---------- Stats ---------- */
+  .stats {
+    position: relative;
+    background: var(--bg-deep);
+    padding: 10px 56px 150px;
+    margin-top: -1px;
+  }
+  .stats-row {
+    display: flex; justify-content: center; gap: 110px; flex-wrap: wrap;
+  }
+  .stat { display: flex; align-items: center; gap: 18px; position: relative; }
+  .stat .num { font-size: 52px; font-weight: 600; line-height: 1; letter-spacing: .02em; position: relative; z-index: 1; }
+  .stat .label { font-size: 9px; font-weight: 600; line-height: 1.3; max-width: 96px; position: relative; z-index: 1; }
+  .stat .halo {
+    position: absolute; left: -26px; top: 50%; width: 110px; height: 110px;
+    transform: translateY(-50%) rotate(-20deg);
+  }
+
+  /* ---------- Specialization ---------- */
+  .spec { position: relative; background: var(--bg-light); padding: 0 56px 170px; }
+  .spec-wave { position: absolute; left: 0; right: 0; top: -140px; width: 100%; height: 141px; }
+  .spec-bottom { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 110px; }
+  .spec-head {
+    display: flex; justify-content: flex-end; align-items: center; gap: 18px;
+    padding-top: 10px; margin-bottom: 30px;
+  }
+  .spec-head h2 {
+    font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
+    text-align: right; line-height: 1.4;
+  }
+  .ring { width: 74px; height: 74px; border-radius: 50%; border: 13px solid var(--white); }
+  .spec-body {
+    position: relative; z-index: 1;
+    display: grid; grid-template-columns: 300px 1fr auto; gap: 40px; align-items: center;
+  }
+  .spec-illu { width: 300px; }
+  .spec-text h3 {
+    font-size: 17px; font-weight: 700; letter-spacing: .02em; text-transform: uppercase;
+    margin-bottom: 22px;
+  }
+  .spec-text p { font-size: 9px; font-weight: 600; line-height: 1.3; max-width: 180px; }
+
+  .cards-wrap { display: flex; align-items: flex-end; gap: 16px; }
+  .cards { display: grid; grid-template-columns: repeat(3, 82px); gap: 16px 16px; }
+  .card {
+    height: 72px; border: 0; font-family: inherit; background: #f4f4f8; border-radius: 3px;
+    display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 4px;
+    color: #a9a9b6; font-weight: 700; font-size: 12px; text-align: center;
+    box-shadow: 0 6px 18px rgba(20, 16, 90, .25);
+    cursor: pointer; transition: transform .2s, box-shadow .2s, color .2s;
+  }
+  .card small { font-size: 6px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; }
+  .card:hover, .card.active { transform: translateY(-4px); color: var(--bg); box-shadow: 0 12px 26px rgba(20, 16, 90, .35); }
+  .card:focus-visible, .arrow:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
+  .arrows { display: flex; flex-direction: column; gap: 8px; }
+  .arrow {
+    width: 28px; height: 26px; border: 0; border-radius: 3px; background: var(--white);
+    color: #6d6d80; cursor: pointer; display: grid; place-items: center;
+    transition: background .2s, color .2s;
+  }
+  .arrow:hover { background: var(--cyan); color: var(--white); }
+  .arrow svg { width: 10px; height: 10px; stroke: currentColor; fill: none; stroke-width: 2.4; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .character { animation: none; }
+    * { transition: none !important; }
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 960px) {
+    .nav, .socials { display: none; }
+    .burger { display: block; }
+    .header { padding: 20px 16px; }
+    .hero { height: auto; min-height: 0; max-height: none; }
+    .hero-content {
+      grid-template-columns: 1fr; justify-items: center; gap: 36px;
+      padding: 150px 16px 180px; text-align: center;
+    }
+    .bullets { order: 3; justify-self: center; margin: 0; flex-wrap: wrap; justify-content: center; }
+    .tagline-wrap { order: 2; justify-self: center; margin: 0; }
+    .tagline { margin-top: 0; }
+    .character { display: none; }
+    .logo { width: 170px; }
+    .stats { padding: 30px 16px 140px; }
+    .stats-row { flex-direction: column; align-items: center; gap: 40px; }
+    .spec { padding: 0 16px 140px; }
+    .spec-head { justify-content: center; }
+    .spec-body { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+    .spec-illu { width: 240px; }
+    .spec-text p { margin: 0 auto; }
+    .cards { grid-template-columns: repeat(3, minmax(0, 82px)); }
+  }
+</style>
+</head>
+<body>
+
+<!-- Shared SVG defs: dot / dash / hatch textures -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <pattern id="dotsWhite" width="9" height="9" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.4" fill="#fff"/>
+      <circle cx="6.5" cy="6.5" r="1.4" fill="#fff"/>
+    </pattern>
+    <pattern id="dotsCyan" width="9" height="9" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.3" fill="#0fd8ea"/>
+      <circle cx="6.5" cy="6.5" r="1.3" fill="#0fd8ea"/>
+    </pattern>
+    <pattern id="dashCyan" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+      <rect x="0" y="0" width="1.3" height="4" rx=".6" fill="#0fd8ea"/>
+      <rect x="5" y="5" width="1.3" height="4" rx=".6" fill="#0fd8ea"/>
+    </pattern>
+    <pattern id="dashSoft" width="11" height="11" patternUnits="userSpaceOnUse" patternTransform="rotate(-25)">
+      <rect x="0" y="0" width="1.6" height="5" rx=".8" fill="#8f8cf0"/>
+      <rect x="5.5" y="5.5" width="1.6" height="5" rx=".8" fill="#8f8cf0"/>
+    </pattern>
+    <pattern id="dashWhite" width="26" height="26" patternUnits="userSpaceOnUse" patternTransform="rotate(20)">
+      <rect x="0" y="0" width="1.4" height="9" rx=".7" fill="#fff"/>
+      <rect x="13" y="13" width="1.4" height="9" rx=".7" fill="#fff" transform="rotate(70 13.7 17.5)"/>
+    </pattern>
+    <pattern id="hatch" width="7" height="14" patternUnits="userSpaceOnUse">
+      <rect x="0" y="0" width="1" height="11" fill="#6f6ae0"/>
+    </pattern>
+    <pattern id="dotsSoft" width="8" height="8" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#8f8cf0"/>
+      <circle cx="6" cy="6" r="1" fill="#8f8cf0"/>
+    </pattern>
+  </defs>
+</svg>
+
+<header class="header">
+  <nav class="socials" aria-label="Réseaux sociaux">
+    <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.5h4V21H3zM10 9.5h3.8v1.6h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.1c0-1.22-.02-2.8-1.7-2.8-1.7 0-1.96 1.33-1.96 2.7V21h-4z"/></svg></a>
+    <a href="#" aria-label="Telegram"><svg viewBox="0 0 24 24"><path d="M21.9 4.3 18.7 19.4c-.24 1.07-.87 1.33-1.76.83l-4.87-3.59-2.35 2.26c-.26.26-.48.48-.98.48l.35-4.96 9.02-8.15c.39-.35-.09-.54-.6-.2L6.36 13.1 1.56 11.6c-1.04-.33-1.06-1.04.22-1.54L20.5 2.85c.87-.32 1.63.2 1.4 1.45z"/></svg></a>
+    <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3zm5 3.5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9zm0 2a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM17.5 5.3a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4z"/></svg></a>
+    <a href="#" aria-label="Twitter"><svg viewBox="0 0 24 24"><path d="M23 5.1a9 9 0 0 1-2.6.7 4.5 4.5 0 0 0 2-2.5 9 9 0 0 1-2.9 1.1 4.5 4.5 0 0 0-7.7 4.1A12.8 12.8 0 0 1 2.5 3.8a4.5 4.5 0 0 0 1.4 6 4.5 4.5 0 0 1-2-.6v.1a4.5 4.5 0 0 0 3.6 4.4 4.5 4.5 0 0 1-2 .1 4.5 4.5 0 0 0 4.2 3.1A9 9 0 0 1 1 18.8a12.8 12.8 0 0 0 6.9 2c8.3 0 12.8-6.9 12.8-12.8v-.6A9 9 0 0 0 23 5.1z"/></svg></a>
+    <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24"><path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8zM9.7 15V9l5.8 3z"/></svg></a>
+    <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M14 8V6c0-.9.6-1.1 1-1.1h2.6V1h-3.6C10 1 9.2 3.9 9.2 5.8V8H6.8v4h2.4v11H14V12h3.3l.4-4z"/></svg></a>
+    <a href="#" aria-label="VK"><svg viewBox="0 0 24 24"><path d="M12.8 18h1.2s.4 0 .6-.3c.2-.2.2-.6.2-.6s0-1.7.8-2c.8-.2 1.8 1.7 2.8 2.4.8.5 1.4.4 1.4.4l2.8-.04s1.5-.1.8-1.2c-.06-.1-.4-.9-2.1-2.5-1.8-1.6-1.5-1.4.6-4.2 1.3-1.7 1.8-2.8 1.6-3.2-.15-.4-1.1-.3-1.1-.3h-3.2s-.24-.03-.4.07c-.17.1-.28.34-.28.34s-.5 1.3-1.2 2.4c-1.4 2.4-2 2.5-2.2 2.4-.5-.3-.4-1.3-.4-2 0-2.2.3-3.1-.7-3.4-.3-.08-.6-.13-1.4-.14-1.1 0-2 0-2.5.25-.35.17-.6.54-.45.56.2.03.66.13.9.46.3.43.3 1.4.3 1.4s.2 2.6-.4 2.9c-.4.2-1-.2-2.2-2.4-.6-1.1-1.1-2.3-1.1-2.3s-.1-.24-.26-.37c-.2-.14-.5-.2-.5-.2H1.8s-.45 0-.6.2c-.14.17 0 .5 0 .5s2.4 5.7 5.2 8.5C9 18.2 12 18 12 18z"/></svg></a>
+  </nav>
+
+  <nav class="nav" aria-label="Navigation principale">
+    <a href="#services">Services</a>
+    <a href="#stats">Prices</a>
+    <a href="#spec">Portfolio</a>
+    <a href="#">Blog</a>
+    <a href="#">Contacts</a>
+  </nav>
+
+  <a href="tel:+33000000000" class="phone" aria-label="Appeler">
+    <svg viewBox="0 0 24 24"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z"/></svg>
+  </a>
+  <button class="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+</header>
+
+<main>
+  <!-- ================= HERO ================= -->
+  <section class="hero" id="services">
+    <svg class="hero-bg" viewBox="0 0 1080 760" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <rect width="1080" height="760" fill="#4039c9"/>
+
+      <!-- big dark left shape -->
+      <path d="M0 0 H275 C250 180 260 330 200 430 C150 510 60 540 0 540 Z" fill="#3530b0"/>
+      <path d="M0 0 H40 C30 40 15 70 0 80 Z" fill="#0fd8ea"/>
+      <!-- cyan dash texture on left -->
+      <path d="M20 0 H180 C175 120 150 250 70 320 C40 345 15 340 0 335 V60 C10 40 18 20 20 0 Z" fill="url(#dashCyan)" opacity=".95"/>
+
+      <!-- top center dark blob with soft dashes -->
+      <path d="M340 0 H600 C610 90 560 190 470 210 C390 230 320 170 320 90 C320 50 330 20 340 0 Z" fill="#3530b0"/>
+      <ellipse cx="460" cy="70" rx="100" ry="72" fill="url(#dashSoft)" transform="rotate(-10 460 70)"/>
+
+      <!-- white dash scatter top right -->
+      <ellipse cx="800" cy="95" rx="100" ry="95" fill="url(#dashWhite)" opacity=".9"/>
+
+      <!-- middle wave dividing hero -->
+      <path d="M0 540 C120 520 230 470 300 410 C380 340 420 340 520 340 C640 340 700 380 780 330 C860 280 890 190 1000 180 C1050 175 1080 190 1080 190 V760 H0 Z" fill="#3a34bd"/>
+
+      <!-- right dark rounded block -->
+      <path d="M690 520 C740 420 800 300 880 220 C940 160 1010 150 1080 170 V480 C1010 500 930 520 850 525 C790 530 720 530 690 520 Z" fill="#332ea8"/>
+      <!-- white dots right -->
+      <path d="M950 200 C990 150 1050 150 1080 160 V300 C1040 330 990 350 950 350 C930 300 930 240 950 200 Z" fill="url(#dotsWhite)"/>
+      <!-- cyan dot oval -->
+      <ellipse cx="815" cy="375" rx="72" ry="96" fill="url(#dotsCyan)" transform="rotate(-10 815 375)"/>
+      <!-- cyan corner -->
+      <path d="M1080 320 C1060 380 1020 430 980 480 C1020 470 1060 450 1080 440 Z" fill="#0fd8ea"/>
+
+      <!-- center bottom half-blob with dots + cyan -->
+      <path d="M395 520 C410 440 460 405 520 405 C590 405 620 460 620 520 Z" fill="#3530b0"/>
+      <path d="M420 520 C440 460 480 425 530 425 C580 425 610 470 612 520 Z" fill="url(#dotsWhite)"/>
+      <path d="M505 520 C505 490 525 470 545 470 C565 470 575 490 572 520 Z" fill="#0fd8ea"/>
+
+      <!-- hatch texture left -->
+      <path d="M100 450 H310 C300 520 240 590 110 610 Z" fill="url(#hatch)" opacity=".7"/>
+
+      <!-- darker lower band -->
+      <path d="M0 610 C150 580 260 540 330 540 C500 540 700 540 1080 480 V760 H0 Z" fill="#3530b0"/>
+    </svg>
+
+    <div class="hero-content">
+      <div class="bullets">
+        <div class="bullet"><p>more new order flow</p></div>
+        <div class="bullet"><p>find new traffic sources</p></div>
+        <div class="bullet"><p>Attract new customers</p></div>
+      </div>
+
+      <div class="logo" role="img" aria-label="Logo SH">
+        <svg viewBox="-2 0 224 176">
+          <!-- s -->
+          <circle cx="8" cy="103" r="8" fill="#fff"/>
+          <path d="M92 70 C80 52 22 52 24 80 C26 104 92 96 92 125 C92 155 40 160 18 138" fill="none" stroke="#fff" stroke-width="22" stroke-linecap="round"/>
+          <!-- apostrophe -->
+          <path d="M117 12 V38" stroke="#fff" stroke-width="10" stroke-linecap="round"/>
+          <!-- h -->
+          <path d="M122 142 V92 C122 58 200 58 200 92 V142" fill="none" stroke="#fff" stroke-width="22" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <div class="tagline-wrap">
+        <svg class="character" viewBox="0 0 130 150" aria-hidden="true">
+          <!-- leaf -->
+          <path d="M40 10 C10 20 0 60 30 95 C45 110 70 118 80 115 C88 90 80 40 40 10 Z" fill="#0fd8ea"/>
+          <path d="M38 22 C45 55 60 85 78 110 M30 40 C35 60 48 80 62 95" stroke="#fff" stroke-width="1.4" fill="none" opacity=".8"/>
+          <path d="M95 60 C110 60 118 80 105 95 C98 100 90 100 88 95 Z" fill="#0fd8ea"/>
+          <!-- person -->
+          <circle cx="82" cy="72" r="8" fill="#ffd2b8"/>
+          <path d="M74 70 C74 60 90 60 90 68 C88 66 80 66 74 70 Z" fill="#1b1660"/>
+          <path d="M68 96 C68 84 76 80 82 80 C88 80 96 84 96 96 Z" fill="#5d57f0"/>
+          <path d="M55 112 C60 100 105 100 112 110 C105 118 60 120 55 112 Z" fill="#6e5ff5"/>
+          <rect x="66" y="88" width="30" height="18" rx="2" fill="#0fd8ea"/>
+          <circle cx="81" cy="97" r="2" fill="#fff"/>
+          <path d="M60 106 H100" stroke="#2b2590" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+        <p class="tagline">An expert in online<br>promotion and<br>advertising</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= STATS ================= -->
+  <section class="stats" id="stats">
+    <div class="stats-row">
+      <div class="stat"><span class="num">6</span><span class="label">years of practice in internet marketing</span></div>
+      <div class="stat">
+        <svg class="halo" viewBox="0 0 110 110" aria-hidden="true"><ellipse cx="55" cy="55" rx="42" ry="54" fill="url(#dotsSoft)"/></svg>
+        <span class="num">40</span><span class="label">satisfied customer companies</span>
+      </div>
+      <div class="stat"><span class="num">370</span><span class="label">hours of marketing advice</span></div>
+    </div>
+  </section>
+
+  <!-- ================= SPECIALIZATION ================= -->
+  <section class="spec" id="spec">
+    <svg class="spec-wave" viewBox="0 0 1080 140" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 140 V100 C200 140 420 130 650 80 C820 40 960 0 1080 10 V140 Z" fill="#4b49e2"/>
+    </svg>
+
+    <div class="spec-head">
+      <h2>Basic<br>specialization</h2>
+      <span class="ring" aria-hidden="true"></span>
+    </div>
+
+    <div class="spec-body">
+      <svg class="spec-illu" viewBox="0 0 300 300" aria-hidden="true">
+        <path d="M40 60 C80 10 200 0 250 50 C300 100 280 200 240 250 C200 300 90 300 50 260 C10 220 0 110 40 60 Z" fill="#3530b0"/>
+        <path d="M30 150 C40 90 70 70 110 70 C80 110 70 160 80 220 C50 210 25 190 30 150 Z" fill="url(#dotsCyan)"/>
+        <path d="M150 230 C190 200 250 200 260 240 C250 280 190 300 150 285 Z" fill="url(#dashSoft)"/>
+        <path d="M160 70 C180 40 220 50 215 80 C210 100 170 105 160 70 Z" fill="#2c279a"/>
+        <circle cx="222" cy="72" r="14" fill="url(#dashWhite)"/>
+        <circle cx="76" cy="130" r="12" fill="url(#dashWhite)"/>
+        <!-- cyan blobs -->
+        <path d="M236 120 C230 90 270 80 290 100 C300 125 280 150 255 150 C240 148 238 135 236 120 Z" fill="#0fd8ea"/>
+        <path d="M22 185 C35 170 60 175 60 192 C58 208 30 212 22 198 Z" fill="#0fd8ea"/>
+        <path d="M45 225 C55 200 95 205 95 230 C95 255 70 265 55 255 C45 248 42 238 45 225 Z" fill="#0fd8ea"/>
+        <!-- logo mark: mirrored R + badge -->
+        <text x="110" y="200" font-family="Montserrat, sans-serif" font-weight="800" font-size="62" fill="#fff">Я</text>
+        <text x="170" y="158" font-family="Montserrat, sans-serif" font-weight="600" font-size="11" fill="#fff">Promo</text>
+        <path d="M168 164 H210 L216 173 L210 182 H168 Z" fill="none" stroke="#fff" stroke-width="2"/>
+        <text x="173" y="177" font-family="Montserrat, sans-serif" font-weight="600" font-size="9" fill="#fff">Direct</text>
+      </svg>
+
+      <div class="spec-text">
+        <h3 id="spec-title">Search.Direct</h3>
+        <p id="spec-desc">Advertising on search results and on thousands of advertising network sites. Reach the right people at the right moment.</p>
+      </div>
+
+      <div class="cards-wrap">
+        <div class="cards" id="cards">
+          <button class="card active" data-title="Search.Direct" data-desc="Advertising on search results and on thousands of advertising network sites. Reach the right people at the right moment.">Search<small>direct</small></button>
+          <button class="card" data-title="Video Ads" data-desc="Pre-roll and in-feed video campaigns that turn views into qualified traffic.">Video<small>ads</small></button>
+          <button class="card" data-title="Social Ads" data-desc="Targeted social campaigns built around your audience, interests and lookalikes.">social</button>
+          <button class="card" data-title="Landing Page" data-desc="High-converting landing pages designed, written and tested for your offer."><svg width="18" height="14" viewBox="0 0 18 14" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1" y="1" width="16" height="12" rx="1.5"/><path d="M4 5h10M4 8h10"/></svg><small>landing page</small></button>
+          <button class="card" data-title="Merchant Center" data-desc="Product feeds and shopping campaigns that put your catalog in front of buyers.">Shop<small>merchant center</small></button>
+          <button class="card" data-title="Search Ads" data-desc="Keyword-driven search campaigns optimised continuously for cost per lead.">Ads<small>search network</small></button>
+        </div>
+        <div class="arrows">
+          <button class="arrow" id="next" aria-label="Suivant"><svg viewBox="0 0 10 10"><path d="M3 1l4 4-4 4"/></svg></button>
+          <button class="arrow" id="prev" aria-label="Précédent"><svg viewBox="0 0 10 10"><path d="M7 1L3 5l4 4"/></svg></button>
+        </div>
+      </div>
+    </div>
+
+    <svg class="spec-bottom" viewBox="0 0 1080 110" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 110 V60 C120 20 300 0 420 10 C520 20 580 70 600 110 Z" fill="#3530b0"/>
+    </svg>
+  </section>
+</main>
+
+<script>
+  const cards = [...document.querySelectorAll('.card')];
+  const title = document.getElementById('spec-title');
+  const desc = document.getElementById('spec-desc');
+  let current = 0;
+
+  function select(i) {
+    current = (i + cards.length) % cards.length;
+    cards.forEach((c, k) => c.classList.toggle('active', k === current));
+    title.textContent = cards[current].dataset.title;
+    desc.textContent = cards[current].dataset.desc;
+  }
+  cards.forEach((c, i) => c.addEventListener('click', () => select(i)));
+  document.getElementById('next').addEventListener('click', () => select(current + 1));
+  document.getElementById('prev').addEventListener('click', () => select(current - 1));
+</script>
+</body>
+</html>
