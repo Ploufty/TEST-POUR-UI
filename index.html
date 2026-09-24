@@ -5,251 +5,365 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Apps1D76 - Outils numériques</title>
 <meta name="description" content="Outils numériques pour l'école primaire - Mission Numérique Éducatif 76">
+<script>document.documentElement.classList.add('js');</script>
 <style>
-  /* =========================================================
-     1. THÈME — modifier ces variables pour réutiliser la base
-     ========================================================= */
-  :root {
-    --blue: #000091;          /* bleu principal */
-    --blue-soft: #e3e3fd;
-    --red: #e1000f;           /* rouge accent */
-    --red-soft: #fee9e9;
-    --white: #ffffff;
-    --text: #1e1e2f;
-    --text-muted: #5b5b6e;
-    --border: #e5e5ee;
-    --bg: #ffffff;
-    --radius: 14px;
-    --shadow: 0 2px 10px rgba(0, 0, 145, .06);
-    --shadow-hover: 0 14px 34px rgba(0, 0, 145, .14);
-    --font: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-    --ease: cubic-bezier(.2, .8, .2, 1);
-  }
+/* =========================================================
+   1. THÈME — modifier ces variables pour réutiliser la base
+   ========================================================= */
+:root {
+  --blue: #000091;
+  --blue-soft: #e3e3fd;
+  --red: #e1000f;
+  --red-soft: #fee9e9;
+  --white: #ffffff;
+  --text: #1e1e2f;
+  --text-muted: #555566;
+  --border: #e5e5ee;
+  --radius: 16px;
+  --shadow: 0 2px 10px rgba(0, 0, 60, .06);
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --ease: cubic-bezier(.2, .8, .2, 1);
+  --nav-h: 64px;
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: var(--font);
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.5;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    overflow-x: hidden;
-  }
-  a { color: inherit; }
-  .skip-link {
-    position: absolute; left: 1rem; top: -3rem; z-index: 100;
-    background: var(--blue); color: var(--white); padding: .5rem 1rem; border-radius: 6px;
-  }
-  .skip-link:focus { top: 1rem; }
-  :focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+  /* Couleurs des catégories : [couleur texte/accent, fond doux] */
+  --c-lang: #000091;   --c-lang-soft: #e3e3fd;   /* Français & langues */
+  --c-math: #ce0500;   --c-math-soft: #fee9e9;   /* Mathématiques */
+  --c-suivi: #18753c;  --c-suivi-soft: #dffee6;  /* Suivi & évaluation */
+  --c-dir: #a94700;    --c-dir-soft: #fff0e5;    /* Direction d'école */
+}
 
-  /* =========================================================
-     2. FOND ANIMÉ — formes douces qui dérivent lentement
-     ========================================================= */
-  .bg {
-    position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none;
-  }
-  .blob {
-    position: absolute; border-radius: 42% 58% 60% 40% / 45% 45% 55% 55%;
-    filter: blur(2px);
-    animation: drift 26s ease-in-out infinite alternate, morph 18s ease-in-out infinite alternate;
-  }
-  .blob--blue { width: 520px; height: 520px; background: var(--blue-soft); top: -180px; left: -160px; }
-  .blob--red  { width: 380px; height: 380px; background: var(--red-soft); bottom: -120px; right: -100px; animation-delay: -8s, -4s; }
-  .blob--small { width: 180px; height: 180px; background: var(--blue-soft); top: 45%; right: 12%; opacity: .6; animation-delay: -14s, -9s; }
-  .dots {
-    position: absolute; width: 220px; height: 220px; border-radius: 50%;
-    background-image: radial-gradient(currentColor 1.4px, transparent 1.6px);
-    background-size: 14px 14px;
-    opacity: .22;
-    animation: drift 32s ease-in-out infinite alternate;
-  }
-  .dots--1 { color: var(--blue); top: 120px; right: 8%; }
-  .dots--2 { color: var(--red); bottom: 12%; left: 6%; width: 160px; height: 160px; animation-delay: -12s; }
-  @keyframes drift {
-    to { transform: translate(60px, 40px) rotate(25deg); }
-  }
-  @keyframes morph {
-    50% { border-radius: 58% 42% 38% 62% / 55% 60% 40% 45%; }
-  }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font); background: var(--white); color: var(--text);
+  line-height: 1.5; overflow-x: hidden;
+}
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; border-radius: 6px; }
+.skip-link {
+  position: absolute; left: 1rem; top: -3rem; z-index: 100;
+  background: var(--blue); color: var(--white); padding: .5rem 1rem; border-radius: 6px;
+}
+.skip-link:focus { top: 1rem; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.container { max-width: 1120px; margin: 0 auto; padding: 0 1.5rem; }
 
-  /* =========================================================
-     3. EN-TÊTE
-     ========================================================= */
-  .tricolore { height: 4px; background: linear-gradient(90deg, var(--blue) 0 33.3%, var(--white) 33.3% 66.6%, var(--red) 66.6%); }
-  .header {
-    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-    max-width: 1100px; width: 100%; margin: 0 auto; padding: 1.25rem 1.5rem;
-  }
-  .brand { display: flex; align-items: center; gap: .9rem; text-decoration: none; }
-  .brand img { height: 48px; width: auto; }
-  .brand-name { font-size: 1.25rem; font-weight: 700; color: var(--blue); letter-spacing: -.01em; }
-  .brand-name span { color: var(--red); }
-  .brand-sub { font-size: .85rem; color: var(--text-muted); }
+/* Barre de progression tricolore */
+.progress {
+  position: fixed; top: 0; left: 0; right: 0; height: 4px; z-index: 60;
+  background: linear-gradient(90deg, var(--blue), var(--blue) 33%, #c9c9ff 50%, var(--red) 67%, var(--red));
+  transform-origin: left; transform: scaleX(var(--p, 0));
+}
+.tricolore { height: 4px; background: linear-gradient(90deg, var(--blue) 0 33.3%, var(--white) 33.3% 66.6%, var(--red) 66.6%); }
 
-  /* =========================================================
-     4. INTRO
-     ========================================================= */
-  .main { flex: 1; width: 100%; max-width: 1100px; margin: 0 auto; padding: 2.5rem 1.5rem 3rem; }
-  .intro { text-align: center; margin-bottom: 2.5rem; }
-  .intro h1 {
-    font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 700; color: var(--blue);
-    letter-spacing: -.02em; line-height: 1.15;
-  }
-  .intro h1 .accent { position: relative; white-space: nowrap; }
-  .intro h1 .accent::after {
-    content: ""; position: absolute; left: 0; right: 0; bottom: .05em; height: .18em;
-    background: var(--red); border-radius: 4px; opacity: .85;
-    transform: scaleX(0); transform-origin: left;
-    animation: underline .9s .3s var(--ease) forwards;
-  }
-  @keyframes underline { to { transform: scaleX(1); } }
-  .intro p { margin-top: .75rem; color: var(--text-muted); font-size: 1.05rem; }
+/* =========================================================
+   2. FOND ANIMÉ
+   ========================================================= */
+.bg { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+.blob {
+  position: absolute; border-radius: 42% 58% 60% 40% / 45% 45% 55% 55%;
+  translate: calc(var(--px, 0) * var(--depth)) calc(var(--py, 0) * var(--depth));
+  transition: translate .6s var(--ease);
+  animation: drift 26s ease-in-out infinite alternate, morph 16s ease-in-out infinite alternate;
+}
+.blob--blue { --depth: 30px; width: 560px; height: 560px; background: var(--blue-soft); top: -220px; left: -200px; opacity: .8; }
+.blob--red  { --depth: -40px; width: 400px; height: 400px; background: var(--red-soft); bottom: -160px; right: -120px; animation-delay: -8s, -4s; }
+@keyframes drift { to { transform: translate(70px, 50px) rotate(30deg); } }
+@keyframes morph { 50% { border-radius: 58% 42% 38% 62% / 55% 60% 40% 45%; } }
 
-  /* =========================================================
-     5. CARTES OUTILS
-     ========================================================= */
-  .tool-grid {
-    display: grid; gap: 1.25rem;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    list-style: none;
-  }
-  .tool-card {
-    --mx: 50%; --my: 50%;
-    position: relative; overflow: hidden; height: 100%;
-    display: flex; flex-direction: column; gap: .6rem;
-    padding: 1.5rem 1.4rem 1.25rem;
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    text-decoration: none;
-    transition: transform .35s var(--ease), box-shadow .35s var(--ease), border-color .35s;
-  }
-  .tool-grid > li {
-    opacity: 0; transform: translateY(16px);
-    animation: appear .6s var(--ease) forwards;
-    animation-delay: calc(var(--i, 0) * 60ms);
-  }
-  @keyframes appear { to { opacity: 1; transform: none; } }
-  /* halo qui suit la souris */
-  .tool-card::before {
-    content: ""; position: absolute; inset: 0; pointer-events: none;
-    background: radial-gradient(260px circle at var(--mx) var(--my), rgba(0, 0, 145, .07), transparent 60%);
-    opacity: 0; transition: opacity .3s;
-  }
-  /* liseré bleu → rouge en haut */
-  .tool-card::after {
-    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px;
-    background: linear-gradient(90deg, var(--blue), var(--red));
-    transform: scaleX(0); transform-origin: left; transition: transform .4s var(--ease);
-  }
-  .tool-card:hover, .tool-card:focus-visible {
-    transform: translateY(-6px);
-    box-shadow: var(--shadow-hover);
-    border-color: transparent;
-  }
-  .tool-card:hover::before, .tool-card:focus-visible::before { opacity: 1; }
-  .tool-card:hover::after, .tool-card:focus-visible::after { transform: scaleX(1); }
+/* =========================================================
+   3. EN-TÊTE + HERO
+   ========================================================= */
+.header { display: flex; align-items: center; justify-content: space-between; padding-top: 1.1rem; padding-bottom: 1.1rem; }
+.brand { display: flex; align-items: center; gap: .9rem; text-decoration: none; }
+.brand img { height: 46px; width: auto; }
+.brand-name { font-size: 1.25rem; font-weight: 800; color: var(--blue); letter-spacing: -.01em; }
+.brand-name span { color: var(--red); }
+.brand-sub { font-size: .85rem; color: var(--text-muted); }
 
-  .tool-icon {
-    width: 52px; height: 52px; border-radius: 14px;
-    display: grid; place-items: center; font-size: 1.6rem;
-    background: var(--blue-soft);
-    transition: transform .4s var(--ease), background .3s;
-  }
-  .tool-grid > li:nth-child(even) .tool-icon { background: var(--red-soft); }
-  .tool-card:hover .tool-icon { transform: rotate(-8deg) scale(1.08); }
+.hero { position: relative; padding: 2.5rem 0 2.75rem; text-align: center; }
+.hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.hero-inner { position: relative; }
+.hero h1 {
+  font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 800; color: var(--blue);
+  letter-spacing: -.03em; line-height: 1.1;
+}
+.hero h1 .w { display: inline-block; }
+.js .hero h1 .w { opacity: 0; transform: translateY(.6em) rotate(3deg); animation: rise .8s var(--ease) forwards; animation-delay: calc(var(--w) * 90ms + 100ms); }
+@keyframes rise { to { opacity: 1; transform: none; } }
+.hero h1 .accent { position: relative; color: var(--red); }
+.hero h1 .accent svg {
+  position: absolute; left: -2%; bottom: -.28em; width: 104%; height: .45em; overflow: visible;
+}
+.hero h1 .accent path {
+  fill: none; stroke: var(--red); stroke-width: 5; stroke-linecap: round;
+  stroke-dasharray: 320; stroke-dashoffset: 320; animation: draw 1s 1s var(--ease) forwards;
+}
+@keyframes draw { to { stroke-dashoffset: 0; } }
+.hero p { margin: 1.1rem auto 1.6rem; color: var(--text-muted); font-size: 1.08rem; max-width: 34rem; }
 
-  .tool-name { font-size: 1.08rem; font-weight: 650; color: var(--text); line-height: 1.3; }
-  .tool-description { font-size: .92rem; color: var(--text-muted); flex: 1; }
-  .tool-link {
-    display: inline-flex; align-items: center; gap: .35rem; margin-top: .25rem;
-    font-size: .9rem; font-weight: 600; color: var(--blue);
-  }
-  .tool-link svg { width: 16px; height: 16px; transition: transform .3s var(--ease); }
-  .tool-card:hover .tool-link svg { transform: translateX(4px); }
-  .tool-card:hover .tool-link { color: var(--red); }
+.search {
+  position: relative; max-width: 440px; margin: 0 auto;
+}
+.search input {
+  width: 100%; padding: .9rem 1rem .9rem 2.9rem;
+  font: inherit; font-size: 1rem; color: var(--text);
+  border: 2px solid var(--border); border-radius: 999px; background: rgba(255, 255, 255, .92);
+  box-shadow: var(--shadow); transition: border-color .25s, box-shadow .25s;
+}
+.search input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 5px rgba(0, 0, 145, .12); }
+.search svg { position: absolute; left: 1.05rem; top: 50%; translate: 0 -50%; width: 18px; height: 18px; color: var(--text-muted); }
 
-  .coming-soon {
-    margin-top: 2.25rem; text-align: center; color: var(--text-muted); font-size: .95rem;
-  }
-  .coming-soon::before {
-    content: ""; display: inline-block; width: 8px; height: 8px; margin-right: .5rem;
-    border-radius: 50%; background: var(--red); vertical-align: middle;
-    animation: pulse 2s ease-in-out infinite;
-  }
-  @keyframes pulse { 50% { transform: scale(1.6); opacity: .4; } }
+/* =========================================================
+   4. MENU DES CATÉGORIES (collant)
+   ========================================================= */
+.catnav {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(255, 255, 255, .86); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  transition: box-shadow .3s;
+}
+.catnav.stuck { box-shadow: 0 6px 20px rgba(0, 0, 60, .07); }
+.catnav ul { position: relative;
+  display: flex; gap: .5rem; list-style: none; height: var(--nav-h); align-items: center;
+  overflow-x: auto; scrollbar-width: none; justify-content: center;
+}
+.catnav ul::-webkit-scrollbar { display: none; }
+.catnav a {
+  display: inline-flex; align-items: center; gap: .5rem; white-space: nowrap;
+  padding: .5rem .95rem; border-radius: 999px; text-decoration: none;
+  font-size: .92rem; font-weight: 600; color: var(--text);
+  border: 1.5px solid transparent;
+  transition: background .3s, color .3s, border-color .3s, transform .2s;
+}
+.catnav a::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--cat); transition: transform .3s var(--ease); }
+.catnav a .count {
+  font-size: .75rem; font-weight: 700; min-width: 1.4rem; padding: 0 .35rem; border-radius: 999px;
+  background: var(--cat-soft); color: var(--cat); text-align: center;
+}
+.catnav a:hover { border-color: var(--cat); }
+.catnav a:hover::before { transform: scale(1.4); }
+.catnav a[aria-current="true"] { background: var(--cat); color: var(--white); }
+.catnav a[aria-current="true"]::before { background: var(--white); }
+.catnav a[aria-current="true"] .count { background: rgba(255, 255, 255, .25); color: var(--white); }
 
-  /* =========================================================
-     6. PIED DE PAGE
-     ========================================================= */
-  .footer {
-    border-top: 1px solid var(--border);
-    padding: 1.5rem; text-align: center; font-size: .88rem; color: var(--text-muted);
-    background: rgba(255, 255, 255, .85);
-  }
+/* =========================================================
+   5. CATÉGORIES & CARTES
+   ========================================================= */
+.main { padding-top: 1rem; padding-bottom: 3rem; }
+.category { scroll-margin-top: calc(var(--nav-h) + 1rem); padding-top: 2.25rem; }
+.category[hidden] { display: none; }
+.cat-head { display: flex; align-items: center; gap: .85rem; margin-bottom: 1.25rem; }
+.cat-icon {
+  width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center;
+  background: var(--cat); color: var(--white); font-size: 1.3rem; flex: none;
+}
+.cat-head h2 { font-size: 1.45rem; font-weight: 800; color: var(--cat); letter-spacing: -.01em; line-height: 1.2; }
+.cat-head p { font-size: .92rem; color: var(--text-muted); }
+.cat-line { flex: 1; height: 2px; border-radius: 2px; background: linear-gradient(90deg, var(--cat), transparent); transform-origin: left; }
+.js .category .cat-line { transform: scaleX(0); transition: transform 1.1s var(--ease) .15s; }
+.js .category.in .cat-line { transform: scaleX(1); }
 
-  /* =========================================================
-     7. ACCESSIBILITÉ & RESPONSIVE
-     ========================================================= */
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { animation: none !important; transition: none !important; }
-    .tool-grid > li { opacity: 1; transform: none; }
-    .intro h1 .accent::after { transform: none; }
-  }
-  @media (max-width: 600px) {
-    .header { justify-content: center; text-align: center; }
-    .brand { flex-direction: column; gap: .5rem; }
-    .main { padding: 1.75rem 1rem 2.5rem; }
-    .blob--blue { width: 320px; height: 320px; }
-    .blob--red { width: 240px; height: 240px; }
-    .blob--small, .dots--1 { display: none; }
-  }
+.tool-grid { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); list-style: none; }
+.tool-grid > li[hidden] { display: none; }
+.js .tool-grid > li { opacity: 0; transform: translateY(28px) scale(.97); transition: opacity .7s var(--ease), transform .7s var(--ease); transition-delay: calc(var(--i, 0) * 90ms); }
+.js .category.in .tool-grid > li { opacity: 1; transform: none; }
+
+.tool-card {
+  --rx: 0deg; --ry: 0deg; --lift: 0px; --mx: 50%; --my: 50%;
+  position: relative; isolation: isolate; height: 100%;
+  display: flex; flex-direction: column; gap: .6rem;
+  padding: 1.5rem 1.4rem 1.25rem;
+  background: var(--white); border: 1px solid var(--border); border-radius: var(--radius);
+  box-shadow: var(--shadow); text-decoration: none;
+  transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry)) translateY(var(--lift));
+  transition: transform .45s var(--ease), box-shadow .45s var(--ease), border-color .3s;
+}
+/* bordure dégradée animée */
+.tool-card::before {
+  content: ""; position: absolute; inset: -1px; z-index: -1; border-radius: inherit; padding: 2px;
+  background: conic-gradient(from var(--angle, 0deg), var(--cat), var(--cat-soft), var(--cat));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  opacity: 0; transition: opacity .35s;
+}
+/* halo qui suit la souris */
+.tool-card::after {
+  content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none;
+  background: radial-gradient(280px circle at var(--mx) var(--my), var(--cat-soft), transparent 65%);
+  opacity: 0; transition: opacity .35s;
+}
+.tool-card:hover, .tool-card:focus-visible {
+  --lift: -8px;
+  border-color: transparent;
+  box-shadow: 0 22px 40px -12px color-mix(in srgb, var(--cat) 35%, transparent);
+}
+.tool-card:hover::before, .tool-card:focus-visible::before { opacity: 1; animation: spin 3s linear infinite; }
+.tool-card:hover::after, .tool-card:focus-visible::after { opacity: 1; }
+@property --angle { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+@keyframes spin { to { --angle: 360deg; } }
+
+.tool-icon {
+  width: 54px; height: 54px; border-radius: 15px; display: grid; place-items: center; font-size: 1.65rem;
+  background: var(--cat-soft); transition: transform .5s var(--ease);
+}
+.tool-card:hover .tool-icon { transform: translateY(-3px) rotate(-10deg) scale(1.12); }
+.tool-name { font-size: 1.08rem; font-weight: 700; color: var(--text); line-height: 1.3; }
+.tool-description { font-size: .93rem; color: var(--text-muted); flex: 1; }
+.tool-link { display: inline-flex; align-items: center; gap: .35rem; margin-top: .3rem; font-size: .9rem; font-weight: 700; color: var(--cat); }
+.tool-link svg { width: 16px; height: 16px; transition: transform .35s var(--ease); }
+.tool-card:hover .tool-link svg { transform: translateX(5px); }
+
+.empty { display: none; text-align: center; padding: 3rem 1rem; color: var(--text-muted); }
+.empty.show { display: block; }
+.coming-soon { margin-top: 3rem; text-align: center; color: var(--text-muted); font-size: .95rem; }
+.coming-soon::before {
+  content: ""; display: inline-block; width: 8px; height: 8px; margin-right: .5rem;
+  border-radius: 50%; background: var(--red); vertical-align: middle; animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 50% { transform: scale(1.7); opacity: .35; } }
+
+/* Couleurs par catégorie */
+.cat-lang  { --cat: var(--c-lang);  --cat-soft: var(--c-lang-soft); }
+.cat-math  { --cat: var(--c-math);  --cat-soft: var(--c-math-soft); }
+.cat-suivi { --cat: var(--c-suivi); --cat-soft: var(--c-suivi-soft); }
+.cat-dir   { --cat: var(--c-dir);   --cat-soft: var(--c-dir-soft); }
+
+/* =========================================================
+   6. PIED DE PAGE
+   ========================================================= */
+.footer { border-top: 1px solid var(--border); padding: 1.5rem; text-align: center; font-size: .88rem; color: var(--text-muted); background: rgba(255, 255, 255, .9); }
+
+/* =========================================================
+   7. ACCESSIBILITÉ & RESPONSIVE
+   ========================================================= */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .js .hero h1 .w, .js .tool-grid > li { opacity: 1; transform: none; }
+  .js .category .cat-line { transform: none; }
+  .hero h1 .accent path { stroke-dashoffset: 0; }
+  .hero canvas { display: none; }
+}
+@media (max-width: 760px) {
+  .catnav ul { justify-content: flex-start; }
+  .catnav a .label-long { display: none; }
+}
+@media (max-width: 600px) {
+  .container { padding: 0 1rem; }
+  .header { justify-content: center; text-align: center; }
+  .brand { flex-direction: column; gap: .4rem; }
+  .hero { padding: 1.5rem 0 2rem; }
+  .blob--blue { width: 340px; height: 340px; }
+  .blob--red { width: 260px; height: 260px; }
+}
 </style>
 </head>
 <body>
-  <a class="skip-link" href="#outils">Aller aux outils</a>
+<a class="skip-link" href="#main">Aller aux outils</a>
+<div class="progress" aria-hidden="true"></div>
 
-  <!-- Fond décoratif animé -->
-  <div class="bg" aria-hidden="true">
-    <div class="blob blob--blue"></div>
-    <div class="blob blob--red"></div>
-    <div class="blob blob--small"></div>
-    <div class="dots dots--1"></div>
-    <div class="dots dots--2"></div>
+<div class="bg" aria-hidden="true">
+  <div class="blob blob--blue"></div>
+  <div class="blob blob--red"></div>
+</div>
+
+<div class="tricolore" aria-hidden="true"></div>
+
+<header class="header container">
+  <a class="brand" href="./">
+    <img src="images/Logo_DSDEN76.png" alt="Logo DSDEN 76" onerror="this.style.display='none'">
+    <div>
+      <div class="brand-name">Apps1D<span>76</span></div>
+      <div class="brand-sub">Mission Numérique Éducatif 76</div>
+    </div>
+  </a>
+</header>
+
+<section class="hero">
+  <canvas aria-hidden="true"></canvas>
+  <div class="hero-inner container">
+    <h1>
+      <span class="w" style="--w:0">Des</span>
+      <span class="w" style="--w:1">outils</span>
+      <span class="w" style="--w:2">numériques</span>
+      <span class="w accent" style="--w:3">pour l'école<svg viewBox="0 0 300 20" preserveAspectRatio="none" aria-hidden="true"><path d="M4 14 C 80 4, 200 4, 296 12"/></svg></span>
+    </h1>
+    <p>Des ressources simples et gratuites pour les enseignants et les directeurs du 1<sup>er</sup> degré.</p>
+    <div class="search" role="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <label for="q" class="sr-only">Rechercher un outil</label>
+      <input id="q" type="search" placeholder="Rechercher un outil…" autocomplete="off">
+    </div>
   </div>
+</section>
 
-  <div class="tricolore" aria-hidden="true"></div>
+<!-- Menu généré automatiquement à partir des sections .category -->
+<nav class="catnav" aria-label="Catégories">
+  <ul class="container" id="catnav"></ul>
+</nav>
 
-  <header class="header">
-    <a class="brand" href="./">
-      <img src="images/Logo_DSDEN76.png" alt="Logo DSDEN 76" onerror="this.style.display='none'">
-      <div>
-        <div class="brand-name">Apps1D<span>76</span></div>
-        <div class="brand-sub">Mission Numérique Éducatif 76</div>
-      </div>
-    </a>
-  </header>
+<main class="main container" id="main">
 
-  <main class="main" id="main">
-    <section class="intro">
-      <h1>Des outils numériques <span class="accent">pour l'école</span></h1>
-      <p>Choisissez un outil pour commencer.</p>
-    </section>
+  <!--
+    POUR AJOUTER UNE CATÉGORIE : copier une <section class="category cat-xxx">,
+    changer id, data-label, data-short et la classe de couleur (voir section 5 du CSS).
+    POUR AJOUTER UN OUTIL : copier un <li> dans la bonne catégorie.
+  -->
 
-    <!-- Pour ajouter un outil : copier un <li> et adapter le lien, l'icône, le nom et la description -->
-    <ul class="tool-grid" id="outils">
+  <section class="category cat-lang" id="langues" data-label="Français & langues" data-short="Français">
+    <div class="cat-head">
+      <span class="cat-icon" aria-hidden="true">📖</span>
+      <div><h2>Français &amp; langues</h2><p>Lecture, littérature et langues vivantes</p></div>
+      <span class="cat-line" aria-hidden="true"></span>
+    </div>
+    <ul class="tool-grid">
       <li><a href="./prompteurs/index.html" class="tool-card">
         <span class="tool-icon" aria-hidden="true">▶️</span>
         <span class="tool-name">Prompteurs de lecture</span>
         <span class="tool-description">Aide à la lecture avec défilement automatique pour améliorer la fluence.</span>
         <span class="tool-link">Ouvrir <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
       </a></li>
+      <li><a href="./Litteranum/index.html" class="tool-card">
+        <span class="tool-icon" aria-hidden="true">📚</span>
+        <span class="tool-name">Littérature et numérique</span>
+        <span class="tool-description">Albums et documentaires pour travailler le numérique en classe.</span>
+        <span class="tool-link">Ouvrir <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+      </a></li>
+      <li><a href="./250consignes/index.html" class="tool-card">
+        <span class="tool-icon" aria-hidden="true">🙋</span>
+        <span class="tool-name">250 consignes en LVE</span>
+        <span class="tool-description">Consignes de classe en allemand, anglais, espagnol et portugais.</span>
+        <span class="tool-link">Ouvrir <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+      </a></li>
+    </ul>
+  </section>
+
+  <section class="category cat-math" id="maths" data-label="Mathématiques" data-short="Maths">
+    <div class="cat-head">
+      <span class="cat-icon" aria-hidden="true">🔢</span>
+      <div><h2>Mathématiques</h2><p>Calcul et automatismes</p></div>
+      <span class="cat-line" aria-hidden="true"></span>
+    </div>
+    <ul class="tool-grid">
+      <li><a href="./course/index.html" class="tool-card">
+        <span class="tool-icon" aria-hidden="true">🏃</span>
+        <span class="tool-name">Course aux nombres</span>
+        <span class="tool-description">Générateur de fiches d'entraînement au calcul (CE1 pour le moment).</span>
+        <span class="tool-link">Ouvrir <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+      </a></li>
+    </ul>
+  </section>
+
+  <section class="category cat-suivi" id="suivi" data-label="Suivi & évaluation" data-short="Suivi">
+    <div class="cat-head">
+      <span class="cat-icon" aria-hidden="true">✅</span>
+      <div><h2>Suivi &amp; évaluation</h2><p>Suivre les progrès et aider les élèves</p></div>
+      <span class="cat-line" aria-hidden="true"></span>
+    </div>
+    <ul class="tool-grid">
       <li><a href="./carnet.html" class="tool-card">
-        <span class="tool-icon" aria-hidden="true">📖</span>
+        <span class="tool-icon" aria-hidden="true">📒</span>
         <span class="tool-name">Carnet de suivi Maternelle</span>
         <span class="tool-description">Suivi des apprentissages de ses élèves par domaine de compétence.</span>
         <span class="tool-link">Ouvrir <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
@@ -260,24 +374,16 @@
         <span class="tool-description">Ressources associées aux compétences des évaluations nationales, du CP au CM2.</span>
         <span class="tool-link">Ouvrir <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
       </a></li>
-      <li><a href="./course/index.html" class="tool-card">
-        <span class="tool-icon" aria-hidden="true">🏃</span>
-        <span class="tool-name">Course aux nombres</span>
-        <span class="tool-description">Générateur de fiches d'entraînement au calcul (CE1 pour le moment).</span>
-        <span class="tool-link">Ouvrir <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
-      </a></li>
-      <li><a href="./250consignes/index.html" class="tool-card">
-        <span class="tool-icon" aria-hidden="true">🙋</span>
-        <span class="tool-name">250 consignes en LVE</span>
-        <span class="tool-description">Consignes de classe en allemand, anglais, espagnol et portugais.</span>
-        <span class="tool-link">Ouvrir <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
-      </a></li>
-      <li><a href="./Litteranum/index.html" class="tool-card">
-        <span class="tool-icon" aria-hidden="true">📚</span>
-        <span class="tool-name">Littérature et numérique</span>
-        <span class="tool-description">Albums et documentaires pour travailler le numérique en classe.</span>
-        <span class="tool-link">Ouvrir <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
-      </a></li>
+    </ul>
+  </section>
+
+  <section class="category cat-dir" id="direction" data-label="Direction d'école" data-short="Direction">
+    <div class="cat-head">
+      <span class="cat-icon" aria-hidden="true">🏫</span>
+      <div><h2>Direction d'école</h2><p>Organiser la vie de l'école</p></div>
+      <span class="cat-line" aria-hidden="true"></span>
+    </div>
+    <ul class="tool-grid">
       <li><a href="./outildir/orga_recre.html" class="tool-card">
         <span class="tool-icon" aria-hidden="true">🕒</span>
         <span class="tool-name">Planning de récréation</span>
@@ -291,24 +397,157 @@
         <span class="tool-link">Ouvrir <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
       </a></li>
     </ul>
+  </section>
 
-    <p class="coming-soon">D'autres outils arrivent bientôt</p>
-  </main>
+  <p class="empty" id="empty" role="status">Aucun outil ne correspond à votre recherche.</p>
+  <p class="coming-soon">D'autres outils arrivent bientôt</p>
+</main>
 
-  <footer class="footer">
-    Académie de Normandie · Seine-Maritime (76) · Conçu pour faciliter l'apprentissage
-  </footer>
+<footer class="footer">
+  Académie de Normandie · Seine-Maritime (76) · Conçu pour faciliter l'apprentissage
+</footer>
 
 <script>
-  // Délai d'apparition échelonné + halo qui suit la souris sur les cartes
-  document.querySelectorAll('.tool-card').forEach((card, i) => {
-    card.parentElement.style.setProperty('--i', i);
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fine = matchMedia('(pointer: fine)').matches;
+  const sections = [...document.querySelectorAll('.category')];
+  const nav = document.getElementById('catnav');
+
+  /* ---- Menu des catégories (généré) ---- */
+  sections.forEach(sec => {
+    const n = sec.querySelectorAll('.tool-grid > li').length;
+    const li = document.createElement('li');
+    li.innerHTML = `<a href="#${sec.id}" class="${[...sec.classList].find(c => c.startsWith('cat-'))}">
+      <span class="label-long">${sec.dataset.label}</span>
+      <span class="label-short" hidden>${sec.dataset.short}</span>
+      <span class="count" aria-label="${n} outils">${n}</span></a>`;
+    nav.appendChild(li);
+  });
+  const links = [...nav.querySelectorAll('a')];
+  const short = matchMedia('(max-width: 760px)');
+  const applyShort = () => nav.querySelectorAll('.label-short').forEach(s => s.hidden = !short.matches);
+  short.addEventListener('change', applyShort); applyShort();
+
+  /* ---- Catégorie active (scroll-spy) ---- */
+  const setActive = id => links.forEach(a => {
+    const on = a.hash === '#' + id;
+    a.setAttribute('aria-current', on);
+    if (on) nav.scrollTo({ left: a.offsetLeft - (nav.clientWidth - a.offsetWidth) / 2, behavior: reduce ? 'auto' : 'smooth' });
+  });
+  const spy = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && setActive(e.target.id)),
+    { rootMargin: '-35% 0px -60% 0px' });
+  sections.forEach(s => spy.observe(s));
+
+  /* ---- Apparition au défilement ---- */
+  const reveal = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('in'); reveal.unobserve(e.target); }
+  }), { threshold: .12 });
+  sections.forEach(s => {
+    s.querySelectorAll('.tool-grid > li').forEach((li, i) => li.style.setProperty('--i', i));
+    reveal.observe(s);
+  });
+
+  /* ---- Barre de progression + ombre du menu ---- */
+  const bar = document.querySelector('.progress');
+  const catnav = document.querySelector('.catnav');
+  const onScroll = () => {
+    const h = document.documentElement;
+    bar.style.setProperty('--p', h.scrollTop / Math.max(1, h.scrollHeight - h.clientHeight));
+    catnav.classList.toggle('stuck', catnav.getBoundingClientRect().top <= 0);
+  };
+  addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+  /* ---- Recherche ---- */
+  const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  const empty = document.getElementById('empty');
+  document.getElementById('q').addEventListener('input', e => {
+    const q = norm(e.target.value.trim());
+    let total = 0;
+    sections.forEach(sec => {
+      let n = 0;
+      sec.querySelectorAll('.tool-grid > li').forEach(li => {
+        const ok = !q || norm(li.textContent).includes(q);
+        li.hidden = !ok; if (ok) n++;
+      });
+      sec.hidden = n === 0; total += n;
+      sec.classList.add('in');
+      links.find(a => a.hash === '#' + sec.id).parentElement.hidden = n === 0;
+    });
+    empty.classList.toggle('show', total === 0);
+  });
+
+  if (reduce) return;
+
+  /* ---- Cartes : inclinaison 3D légère + halo ---- */
+  if (fine) document.querySelectorAll('.tool-card').forEach(card => {
     card.addEventListener('pointermove', e => {
       const r = card.getBoundingClientRect();
-      card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
-      card.style.setProperty('--my', (e.clientY - r.top) + 'px');
+      const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+      card.style.setProperty('--mx', x * 100 + '%');
+      card.style.setProperty('--my', y * 100 + '%');
+      card.style.setProperty('--ry', (x - .5) * 4 + 'deg');
+      card.style.setProperty('--rx', (.5 - y) * 4 + 'deg');
+    });
+    card.addEventListener('pointerleave', () => {
+      card.style.setProperty('--rx', '0deg'); card.style.setProperty('--ry', '0deg');
     });
   });
+
+  /* ---- Parallaxe du fond ---- */
+  if (fine) addEventListener('pointermove', e => {
+    document.body.style.setProperty('--px', (e.clientX / innerWidth - .5).toFixed(3));
+    document.body.style.setProperty('--py', (e.clientY / innerHeight - .5).toFixed(3));
+  }, { passive: true });
+
+  /* ---- Constellation bleu / rouge dans le hero ---- */
+  const hero = document.querySelector('.hero');
+  const cv = hero.querySelector('canvas'), ctx = cv.getContext('2d');
+  const colors = ['0,0,145', '225,0,15'];
+  let W, H, pts = [], mouse = { x: -999, y: -999 }, running = false;
+  const resize = () => {
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    W = hero.clientWidth; H = hero.clientHeight;
+    cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const count = Math.round(Math.min(70, W * H / 12000));
+    pts = Array.from({ length: count }, (_, i) => ({
+      x: Math.random() * W, y: Math.random() * H,
+      vx: (Math.random() - .5) * .35, vy: (Math.random() - .5) * .35,
+      r: Math.random() * 1.8 + 1, c: colors[i % 5 === 0 ? 1 : 0]
+    }));
+  };
+  const tick = () => {
+    if (!running) return;
+    ctx.clearRect(0, 0, W, H);
+    for (const p of pts) {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0 || p.x > W) p.vx *= -1;
+      if (p.y < 0 || p.y > H) p.vy *= -1;
+      const dm = Math.hypot(p.x - mouse.x, p.y - mouse.y);
+      if (dm < 140) { p.x += (p.x - mouse.x) / dm * .6; p.y += (p.y - mouse.y) / dm * .6; }
+    }
+    for (let i = 0; i < pts.length; i++) {
+      const a = pts[i];
+      for (let j = i + 1; j < pts.length; j++) {
+        const b = pts[j], d = Math.hypot(a.x - b.x, a.y - b.y);
+        if (d < 120) {
+          ctx.strokeStyle = `rgba(${a.c},${(1 - d / 120) * .18})`;
+          ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+        }
+      }
+      ctx.fillStyle = `rgba(${a.c},.35)`;
+      ctx.beginPath(); ctx.arc(a.x, a.y, a.r, 0, Math.PI * 2); ctx.fill();
+    }
+    requestAnimationFrame(tick);
+  };
+  hero.addEventListener('pointermove', e => { const r = hero.getBoundingClientRect(); mouse = { x: e.clientX - r.left, y: e.clientY - r.top }; });
+  hero.addEventListener('pointerleave', () => mouse = { x: -999, y: -999 });
+  new IntersectionObserver(([e]) => {
+    const was = running; running = e.isIntersecting;
+    if (running && !was) requestAnimationFrame(tick);
+  }).observe(hero);
+  addEventListener('resize', resize); resize();
+})();
 </script>
 </body>
 </html>
