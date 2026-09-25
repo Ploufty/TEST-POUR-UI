@@ -1,0 +1,42 @@
+[
+  {
+    "id": "langues",
+    "titre": "Français & langues",
+    "court": "Français",
+    "description": "Lecture, littérature et langues vivantes",
+    "icone": "📖",
+    "couleur": "bleu"
+  },
+  {
+    "id": "maths",
+    "titre": "Mathématiques",
+    "court": "Maths",
+    "description": "Calcul et automatismes",
+    "icone": "🔢",
+    "couleur": "rouge"
+  },
+  {
+    "id": "suivi",
+    "titre": "Suivi & évaluation",
+    "court": "Suivi",
+    "description": "Suivre les progrès et aider les élèves",
+    "icone": "✅",
+    "couleur": "vert"
+  },
+  {
+    "id": "direction",
+    "titre": "Direction d'école",
+    "court": "Direction",
+    "description": "Organiser la vie de l'école",
+    "icone": "🏫",
+    "couleur": "orange"
+  },
+  {
+    "id": "autres",
+    "titre": "Autres outils",
+    "court": "Autres",
+    "description": "Outils en cours de classement",
+    "icone": "🧩",
+    "couleur": "violet"
+  }
+]

@@ -1,0 +1,8 @@
+{
+  "titre": "Planning de récréation",
+  "description": "Qui surveille quand ? Un organiseur simple avec étiquettes déplaçables.",
+  "icone": "🕒",
+  "categorie": "direction",
+  "page": "orga_recre.html",
+  "ordre": 1
+}

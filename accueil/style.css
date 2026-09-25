@@ -5,9 +5,9 @@
    9. Paramètres d'affichage  10. Animations réduites  11. Responsive
    ===================================================================== */
 
-/* ---------- 1. POLICE MARIANNE (fichiers dans /fonts) ---------- */
-@font-face { font-family: Marianne; src: url(fonts/Marianne-Regular.woff2) format("woff2"); font-weight: 400; font-display: swap; }
-@font-face { font-family: Marianne; src: url(fonts/Marianne-Bold.woff2) format("woff2"); font-weight: 700; font-display: swap; }
+/* ---------- 1. POLICE MARIANNE (fichiers dans accueil/polices/) ---------- */
+@font-face { font-family: Marianne; src: url(polices/Marianne-Regular.woff2) format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: Marianne; src: url(polices/Marianne-Bold.woff2) format("woff2"); font-weight: 700; font-display: swap; }
 
 /* ---------- 2. THÈME ---------- */
 :root {

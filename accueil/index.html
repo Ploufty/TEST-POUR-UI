@@ -7,10 +7,10 @@
 <meta name="description" content="Outils numériques pour l'école primaire - Mission Numérique Éducatif 76">
 <meta name="theme-color" content="#000091">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<link rel="preload" href="fonts/Marianne-Regular.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="fonts/Marianne-Bold.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="icon" href="icones/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icones/apple-touch-icon.png">
+<link rel="preload" href="polices/Marianne-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="polices/Marianne-Bold.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="style.css">
 <!-- Applique les préférences d'affichage avant le premier rendu (évite le flash) -->
 <script>
@@ -20,7 +20,7 @@
   d.dataset.theme = p.theme === 'dark' || (p.theme !== 'light' && mq('(prefers-color-scheme: dark)')) ? 'dark' : 'light';
   d.dataset.motion = p.motion === 'reduce' || (p.motion !== 'on' && mq('(prefers-reduced-motion: reduce)')) ? 'reduce' : 'full';
   d.dataset.contrast = p.contrast ? 'high' : 'normal';
-  d.style.setProperty('--text-scale', (p.text || 100) / 100);
+  d.style.setProperty('--text-scale', ({ 115: 1.15, 130: 1.3 })[p.text] || 1);
   d.classList.add('js');
 })(document.documentElement);
 </script>
@@ -38,7 +38,7 @@
 <header>
   <div class="brandbar container">
     <a class="brand" href="./">
-      <img src="images/Logo_DSDEN76.png" alt="Logo DSDEN 76" height="46" onerror="this.remove()">
+      <img src="logo.png" alt="Logo DSDEN 76" height="46">
       <div><b>Apps1D<span>76</span></b><small>Mission Numérique Éducatif 76</small></div>
     </a>
     <div class="actions">
@@ -127,7 +127,7 @@
     </div>
   </form>
 </dialog>
-<!-- Remplacé à la compilation par la liste des outils + script.js minifiés -->
+<!-- Remplacé à la compilation par la liste des outils (lue dans Outils/) + script.js minifié -->
 <script src="script.js"></script>
 </body>
 </html>

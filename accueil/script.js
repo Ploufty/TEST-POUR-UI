@@ -11,8 +11,15 @@
 
   /* ================= 1. PRÉFÉRENCES D'AFFICHAGE ================= */
   const KEY = 'apps1d-prefs', DEF = { theme: 'auto', text: '100', motion: 'auto', contrast: false };
+  const VALEURS = { theme: ['auto', 'light', 'dark'], text: ['100', '115', '130'], motion: ['auto', 'on', 'reduce'] };
+  const nettoyer = p => ({ // on ne garde que des valeurs connues (stockage local modifiable par l'utilisateur)
+    theme: VALEURS.theme.includes(p?.theme) ? p.theme : DEF.theme,
+    text: VALEURS.text.includes(String(p?.text)) ? String(p.text) : DEF.text,
+    motion: VALEURS.motion.includes(p?.motion) ? p.motion : DEF.motion,
+    contrast: p?.contrast === true
+  });
   let prefs;
-  try { prefs = { ...DEF, ...JSON.parse(localStorage.getItem(KEY)) }; } catch { prefs = { ...DEF }; }
+  try { prefs = nettoyer(JSON.parse(localStorage.getItem(KEY))); } catch { prefs = { ...DEF }; }
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(prefs)); } catch { /* navigation privée */ } };
   const darkMq = mq('(prefers-color-scheme: dark)'), motionMq = mq('(prefers-reduced-motion: reduce)');
   const themeBtn = $('#theme-toggle'), metaTheme = $('meta[name="theme-color"]');
@@ -44,26 +51,25 @@
   $('#settings-open').addEventListener('click', () => { syncForm(); dlg.showModal ? dlg.showModal() : dlg.setAttribute('open', ''); });
   form.addEventListener('change', e => {
     const t = e.target;
-    prefs[t.name] = t.type === 'checkbox' ? t.checked : t.value;
+    prefs = nettoyer({ ...prefs, [t.name]: t.type === 'checkbox' ? t.checked : t.value });
     save(); apply();
   });
   $('#reset').addEventListener('click', () => { prefs = { ...DEF }; save(); apply(); syncForm(); });
   dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); }); // clic sur le fond = fermer
 
-  /* ================= 2. RENDU DES OUTILS (outils.js) ================= */
+  /* ================= 2. RENDU DES OUTILS (liste intégrée à la compilation depuis Outils/) ================= */
   const data = window.APPS1D?.categories || [];
   const box = $('#categories'), nav = $('#catnav');
-  if (!data.length) box.innerHTML = '<p class="empty">La liste des outils (outils.js) est introuvable.</p>';
   box.innerHTML = data.map(c => `
     <section class="category cat-${esc(c.couleur)}" id="${esc(c.id)}">
       <div class="cat-head"><span class="cat-icon" aria-hidden="true">${esc(c.icone)}</span><div><h2>${esc(c.titre)}</h2><p>${esc(c.description)}</p></div><span class="cat-line"></span></div>
-      <ul class="grid">${(c.outils || []).map((o, i) => `
+      <ul class="grid">${c.outils.map((o, i) => `
         <li style="--i:${i}"><a class="card" href="${esc(o.lien)}"><i aria-hidden="true">${esc(o.icone)}</i><h3>${esc(o.titre)}</h3><p>${esc(o.description)}</p><span>Ouvrir</span></a></li>`).join('')}
       </ul>
-    </section>`).join('') || box.innerHTML;
+    </section>`).join('') || '<p class="empty">Aucun outil à afficher.</p>';
   nav.innerHTML = data.map(c => {
-    const n = (c.outils || []).length;
-    return `<li><a href="#${esc(c.id)}" class="cat-${esc(c.couleur)}"><span class="long">${esc(c.titre)}</span><span class="short">${esc(c.court || c.titre)}</span><span class="count" aria-label="${n} outil${n > 1 ? 's' : ''}">${n}</span></a></li>`;
+    const n = c.outils.length;
+    return `<li><a href="#${esc(c.id)}" class="cat-${esc(c.couleur)}"><span class="long">${esc(c.titre)}</span><span class="short">${esc(c.court)}</span><span class="count" aria-label="${n} outil${n > 1 ? 's' : ''}">${n}</span></a></li>`;
   }).join('');
 
   const sections = $$('.category'), links = $$('a', nav);
@@ -84,7 +90,7 @@
   sections.forEach(s => { spy.observe(s); reveal.observe(s); });
 
   /* ================= 3. RECHERCHE (insensible aux accents) ================= */
-  const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  const norm = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
   const items = $$('.grid > li').map(li => ({ li, sec: li.closest('.category'), txt: norm(li.textContent + ' ' + li.closest('.category').querySelector('h2').textContent) }));
   const empty = $('#empty');
   $('#q').addEventListener('input', e => {
@@ -197,7 +203,8 @@
     deferred.prompt(); await deferred.userChoice; deferred = null; install.hidden = true;
   });
   addEventListener('appinstalled', () => { install.hidden = true; });
-  if (!standalone && /iPad|iPhone|iPod/.test(navigator.userAgent + (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.userAgent) ? 'iPad' : ''))) {
+  const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.userAgent));
+  if (ios && !standalone) { // Safari ne propose pas de bouton d'installation : on explique la marche à suivre
     install.hidden = false; $('#ios-hint').hidden = false;
   }
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {

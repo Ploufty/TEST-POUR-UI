@@ -4,7 +4,7 @@ const VERSION = 'apps1d-dev';            // remplacé à la compilation par une 
 const CORE = ['./', './index.html'];       // remplacé à la compilation par la liste des fichiers de l'accueil
 
 self.addEventListener('install', e => {
-  // allSettled : un fichier manquant (ex. logo) ne bloque pas l'installation
+  // allSettled : un fichier indisponible ne bloque pas l'installation
   e.waitUntil(caches.open(VERSION).then(c => Promise.allSettled(CORE.map(u => c.add(u)))).then(() => self.skipWaiting()));
 });
 
@@ -14,25 +14,25 @@ self.addEventListener('activate', e => {
     .then(() => self.clients.claim()));
 });
 
-const put = (req, res) => { if (res.ok) caches.open(VERSION).then(c => c.put(req, res)); return res; };
+const put = (req, res) => { // copie faite tout de suite : la réponse originale part vers la page
+  if (res.ok) { const copie = res.clone(); caches.open(VERSION).then(c => c.put(req, copie)); }
+  return res;
+};
+const horsLigne = () => new Response(
+  `<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Hors ligne</title>
+  <body style="font-family:system-ui;text-align:center;padding:3rem 1rem"><h1>Vous êtes hors ligne</h1>
+  <p>Cette page n'a pas encore été ouverte avec une connexion.<br><a href="${self.registration.scope}">Retour à l'accueil</a></p>`,
+  { headers: { 'Content-Type': 'text/html; charset=utf-8' } });
 
 self.addEventListener('fetch', e => {
-  const req = e.request, url = new URL(req.url);
-  if (req.method !== 'GET' || url.origin !== location.origin) return;
-
-  // Pages et liste des outils : réseau d'abord (toujours à jour), cache si hors ligne
-  if (req.mode === 'navigate' || url.pathname.endsWith('/outils.js')) {
-    e.respondWith(
-      fetch(req).then(res => put(req, res.clone()) && res)
-        .catch(() => caches.match(req).then(r => r || (req.mode === 'navigate'
-          ? new Response('<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Hors ligne</title><body style="font-family:system-ui;text-align:center;padding:3rem 1rem"><h1>Vous êtes hors ligne</h1><p>Cette page n\'a pas encore été ouverte avec une connexion.<br><a href="./">Retour à l\'accueil</a></p>', { headers: { 'Content-Type': 'text/html; charset=utf-8' } })
-          : Response.error())))
-    );
-    return;
-  }
-  // Autres fichiers : cache immédiat + mise à jour en arrière-plan
-  e.respondWith(caches.match(req).then(cached => {
-    const net = fetch(req).then(res => put(req, res.clone()) && res).catch(() => cached || Response.error());
-    return cached || net;
-  }));
+  const req = e.request;
+  if (req.method !== 'GET' || new URL(req.url).origin !== location.origin) return;
+  e.respondWith(req.mode === 'navigate'
+    // Pages (dont l'accueil, qui contient la liste des outils) : réseau d'abord, cache si hors ligne
+    ? fetch(req).then(res => put(req, res)).catch(async () => (await caches.match(req)) || horsLigne())
+    // Autres fichiers : cache immédiat, mise à jour en arrière-plan
+    : caches.match(req).then(cached => {
+        const reseau = fetch(req).then(res => put(req, res)).catch(() => cached || Response.error());
+        return cached || reseau;
+      }));
 });

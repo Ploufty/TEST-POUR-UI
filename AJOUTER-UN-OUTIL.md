@@ -1,51 +1,43 @@
-# Ajouter un outil sur la page d'accueil
+# Ajouter un outil
 
-Trois façons, de la plus simple à la plus complète. Dans tous les cas, **la Forge vérifie tout automatiquement** : en cas d'erreur, la page en ligne n'est pas modifiée et un message explique quoi corriger.
+**Principe : un outil = un dossier dans `Outils/`.** La page d'accueil le trouve et l'affiche toute seule.
 
----
+## Sur la Forge (sans rien installer)
 
-## Méthode 1 — Directement sur la Forge (aucune installation)
-
-1. **Déposer l'outil** : dans le dépôt, bouton **＋ › Nouveau répertoire** (ex. `calcul-flash`), puis **Téléverser un fichier** pour y mettre l'`index.html` et les fichiers de l'outil.
-2. **L'ajouter à la liste** : ouvrir `outils.json` › **Modifier** › copier un bloc outil existant dans la bonne catégorie et l'adapter :
-
+1. Ouvrir le dossier **Outils** du dépôt › **＋ › Nouveau répertoire** (ex. `calcul-flash`, sans accent ni espace de préférence).
+2. **Téléverser** les fichiers de l'outil dans ce dossier (au minimum sa page `index.html`).
+3. Dans le même dossier, **＋ › Nouveau fichier** nommé `outil.json` :
    ```json
    {
      "titre": "Calcul mental flash",
      "description": "Des calculs chronométrés pour travailler les automatismes.",
      "icone": "⚡",
-     "lien": "./calcul-flash/"
-   },
+     "categorie": "maths"
+   }
    ```
-   ⚠ Une virgule sépare deux blocs, **pas de virgule après le dernier** de la liste.
-3. **Valider les modifications** (message : « Ajout de Calcul mental flash »).
-4. Après 1 à 2 minutes : **Compilation › Pipelines** doit être ✅ vert. La page en ligne est à jour.
-   ❌ rouge ? Cliquer dessus : le message indique la ligne ou le lien à corriger.
+   Catégories : `langues`, `maths`, `suivi`, `direction`, `autres` (liste complète dans `Outils/categories.json`).
+4. **Valider**. Après 1 à 2 minutes, **Compilation › Pipelines** : ✅ vert = en ligne. ❌ rouge = cliquer pour lire le message, qui indique quoi corriger.
 
-## Méthode 2 — Avec l'assistant (sur son ordinateur)
+> Oublié la fiche ? L'outil apparaît quand même dans « Autres outils ». Il suffit d'ajouter la fiche ensuite.
 
-```bash
-npm run ajouter      # répondre aux questions : catégorie, nom, description, icône, lien
-npm run apercu       # vérifier le rendu
-git add . && git commit -m "Ajout de Calcul mental flash" && git push
-```
+## Sur son ordinateur
 
-## Méthode 3 — Proposer un outil sans modifier le dépôt
+1. Glisser le dossier de l'outil dans `Outils/`.
+2. `npm run ajouter` → choisir le dossier (ceux sans fiche sont proposés en premier), répondre aux questions.
+3. `npm run apercu` pour vérifier, puis :
+   ```bash
+   git add Outils && git commit -m "Ajout de Calcul mental flash" && git push
+   ```
 
-**Tickets › Nouveau ticket › modèle « Nouvel-outil »**, remplir la fiche. Un mainteneur l'ajoutera.
+## Autres opérations
 
----
-
-## Règles de la liste (`outils.json`)
-
-| Champ | Règle |
+| Je veux… | Je fais… |
 |---|---|
-| `titre` | Court, sans le mot « outil » |
-| `description` | Une phrase, 160 caractères maximum |
-| `icone` | Un seul emoji |
-| `lien` | `./dossier/` (dossier contenant un `index.html`) ou `https://…` — **respecter les majuscules** |
-| Catégorie `id` | minuscules, chiffres et tirets (ex. `sciences`) |
-| Catégorie `couleur` | `bleu`, `rouge`, `vert`, `orange`, `violet` ou `turquoise` |
+| Retirer un outil | Supprimer son dossier dans `Outils/` |
+| Le changer de catégorie | Modifier `"categorie"` dans son `outil.json` |
+| Changer l'ordre | Ajouter `"ordre": 1`, `2`… dans les fiches (sinon ordre alphabétique) |
+| Page d'entrée autre que index.html | Ajouter `"page": "ma-page.html"` dans la fiche |
+| Créer une catégorie | `npm run ajouter` (option « Nouvelle catégorie ») ou ajouter un bloc dans `Outils/categories.json` |
+| Proposer un outil sans accès au dépôt | Ouvrir un ticket avec le modèle « Nouvel-outil » |
 
-Retirer un outil : supprimer son bloc dans `outils.json` (et son dossier si besoin).
-Changer l'ordre : déplacer les blocs, l'ordre du fichier est l'ordre d'affichage.
+⚠ Ne jamais déposer de données d'élèves, de sauvegardes ou de mots de passe dans un dossier d'outil : le contrôle de sécurité bloquera la publication.

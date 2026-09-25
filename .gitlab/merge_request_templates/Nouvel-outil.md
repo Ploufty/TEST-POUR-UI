@@ -1,8 +1,8 @@
-## Ajout d'un outil
+## Ajout ou modification d'un outil
 
-- [ ] Le dossier de l'outil est ajouté (avec un `index.html`), ou le lien est une adresse `https://`
-- [ ] `outils.json` est mis à jour (`npm run ajouter` ou modification directe)
-- [ ] La vérification automatique (pipeline) est verte
-- [ ] Aperçu contrôlé (`npm run apercu`) : carte lisible, lien fonctionnel
+- [ ] Le dossier de l'outil est dans `Outils/` (un dossier = un outil)
+- [ ] Sa fiche `outil.json` est créée (`npm run ajouter`) : titre, description, icône, catégorie
+- [ ] Aucun fichier personnel ou sensible dans le dossier (données élèves, sauvegardes, mots de passe)
+- [ ] Le pipeline est vert (vérification + contrôle de sécurité)
 
 Ferme #

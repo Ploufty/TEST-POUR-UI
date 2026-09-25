@@ -1,0 +1,8 @@
+{
+  "titre": "Carnet de suivi Maternelle",
+  "description": "Suivi des apprentissages de ses élèves par domaine de compétence.",
+  "icone": "📒",
+  "categorie": "suivi",
+  "page": "carnet.html",
+  "ordre": 1
+}

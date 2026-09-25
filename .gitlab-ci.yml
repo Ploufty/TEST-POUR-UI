@@ -1,6 +1,5 @@
-# Intégration continue sur la Forge (GitLab)
-# - Demande de fusion / autre branche : vérification de outils.json + compilation d'essai
-# - Branche principale : compilation et publication sur GitLab Pages
+# Forge (GitLab) : compilation + contrôle de sécurité à chaque envoi,
+# publication sur GitLab Pages uniquement depuis la branche principale.
 image: node:22-alpine
 
 cache:
@@ -12,15 +11,13 @@ before_script:
 
 verifier:
   stage: test
-  script:
-    - npm run build
+  script: [npm run compiler]
   rules:
     - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
 
 pages:
   stage: deploy
-  script:
-    - npm run build
+  script: [npm run compiler]
   artifacts:
     paths: [public]
   rules:
