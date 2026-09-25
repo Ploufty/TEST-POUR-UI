@@ -1,11 +1,7 @@
 /* Apps1D76 — service worker : fonctionnement hors ligne.
-   Incrémenter VERSION après chaque mise en ligne pour forcer la mise à jour du cache. */
-const VERSION = 'apps1d-v1';
-const CORE = [
-  './', './index.html', './style.css', './script.js', './outils.js', './manifest.webmanifest',
-  './icons/icon.svg', './icons/icon-192.png', './icons/icon-512.png',
-  './fonts/Marianne-Regular.woff2', './fonts/Marianne-Bold.woff2', './images/Logo_DSDEN76.png'
-];
+   VERSION change automatiquement à chaque compilation : les postes récupèrent la nouvelle version. */
+const VERSION = 'apps1d-dev';            // remplacé à la compilation par une empreinte du contenu
+const CORE = ['./', './index.html'];       // remplacé à la compilation par la liste des fichiers de l'accueil
 
 self.addEventListener('install', e => {
   // allSettled : un fichier manquant (ex. logo) ne bloque pas l'installation
