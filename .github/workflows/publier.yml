@@ -1,0 +1,36 @@
+# GitHub : compile la page d'accueil (Outils/ + accueil/) et la publie sur la branche gh-pages.
+# Réglage à faire une seule fois : Settings › Pages › Deploy from a branch › gh-pages / (root).
+# (Sur la Forge, c'est .gitlab-ci.yml qui fait le même travail.)
+name: Publier la page
+
+on:
+  push:
+    branches: [main, claude/v4-dossier-outils]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publication
+  cancel-in-progress: true
+
+jobs:
+  publier:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm run compiler
+      - name: Envoi sur la branche gh-pages
+        run: |
+          cd public
+          touch .nojekyll
+          git init -q -b gh-pages
+          git add -A
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -qm "Publication de ${GITHUB_SHA::7}"
+          git push -qf "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" gh-pages

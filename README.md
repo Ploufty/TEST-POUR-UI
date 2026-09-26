@@ -58,6 +58,12 @@ Outil hébergé ailleurs : remplacer `page` par `"url": "https://…"`.
   vulnérabilités des dépendances (`npm audit`).
 - Page d'accueil : politique de sécurité (CSP) générée à chaque compilation, textes des fiches systématiquement échappés.
 
+## Publication sur GitHub (test)
+
+`.github/workflows/publier.yml` compile à chaque envoi et publie le résultat sur la branche **gh-pages**.
+Réglage unique : **Settings › Pages › Deploy from a branch › `gh-pages` / (root)**.
+Ne jamais publier directement une branche de travail : sa racine ne contient pas la page compilée.
+
 ## Publication sur la Forge
 
 Branche principale → compilation + contrôles + publication (**Déploiement › Pages**). Autres branches → contrôles seulement.
