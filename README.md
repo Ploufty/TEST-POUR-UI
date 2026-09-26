@@ -39,7 +39,8 @@ Sans Node.js : il suffit d'envoyer sur GitHub, la mise à jour se fait en ligne 
 
 ## Publication
 
-- **GitHub Pages** : Settings › Pages › *Deploy from a branch* › **Clean** / (root).
+- **GitHub Pages** : Settings › Pages › *Deploy from a branch* › **main** (ou **Clean** dans le dépôt de test) / (root).
+- **Nouveau dépôt à partir du zip** : voir [IMPORTER-DANS-UN-NOUVEAU-DEPOT.md](IMPORTER-DANS-UN-NOUVEAU-DEPOT.md).
 - **Forge (GitLab)** : `.gitlab-ci.yml` met à jour la liste et publie sur GitLab Pages.
 
 ## Sécurité

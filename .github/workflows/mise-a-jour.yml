@@ -1,10 +1,10 @@
-# À chaque envoi sur la branche Clean : relit le dossier Outils/, met à jour outils.js
+# À chaque envoi sur la branche principale (main ou master) ou sur Clean : relit le dossier Outils/, met à jour outils.js
 # (+ sécurité et hors ligne) et l'enregistre si besoin. Pages publie ensuite la branche telle quelle.
 name: Mettre à jour la page d'accueil
 
 on:
   push:
-    branches: [Clean]
+    branches: [main, master, Clean]
   workflow_dispatch:
 
 permissions:

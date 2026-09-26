@@ -42,10 +42,11 @@ scripts/                Outils de maintenance (Node.js, sans dépendance)
   ajouter-outil.mjs     Assistant en questions/réponses pour créer une fiche
   securite.mjs          Contrôle de sécurité (secrets, fichiers sensibles, CSP…)
 
-.github/workflows/mise-a-jour.yml   GitHub : relance generer.mjs à chaque envoi sur la branche Clean
+.github/workflows/mise-a-jour.yml   GitHub : relance generer.mjs à chaque envoi sur main, master ou Clean
 .gitlab-ci.yml                      Forge (GitLab) : génère puis publie sur GitLab Pages
 .gitlab/                            Modèles de ticket et de demande de fusion « Nouvel-outil »
 README.md                           Présentation courte
+IMPORTER-DANS-UN-NOUVEAU-DEPOT.md   Tutoriel : créer un nouveau dépôt à partir du zip
 AJOUTER-UN-OUTIL.md                 Tutoriel pour les collègues (sans connaissances techniques)
 CLAUDE.md                           Ce guide (lu automatiquement par Claude Code)
 ```
@@ -76,7 +77,7 @@ Outils/                     scripts/generer.mjs              index.html (dans le
 3. **`script.js`** lit `window.APPS1D`, génère les sections, les cartes et le menu, puis active les interactions.
    Tous les textes venant des fiches sont **échappés** (fonction `esc`) : une fiche ne peut pas injecter de HTML.
 4. **Automatismes :**
-   - sur GitHub, le workflow `mise-a-jour.yml` exécute `npm run generer` à chaque envoi sur `Clean` et enregistre `outils.js` s'il a changé (commit « Mise à jour automatique… ») ;
+   - sur GitHub, le workflow `mise-a-jour.yml` exécute `npm run generer` à chaque envoi sur `main`, `master` ou `Clean` et enregistre `outils.js` s'il a changé (commit « Mise à jour automatique… ») ;
    - sur la Forge, `.gitlab-ci.yml` fait la même chose puis publie.
 
 ### Format des fichiers de données
@@ -195,7 +196,7 @@ Pour tester l'installation et le hors ligne, il faut passer par `npm run apercu`
 
 ## 7. Publication
 
-- **GitHub Pages :** Settings › Pages › *Deploy from a branch* › **`Clean`** / (root). Pages publie la branche telle quelle, avec Jekyll, qui ignore les fichiers commençant par `.`.
+- **GitHub Pages :** Settings › Pages › *Deploy from a branch* › **`main`** (ou `Clean` dans le dépôt de test) / (root). Pages publie la branche telle quelle, avec Jekyll, qui ignore les fichiers commençant par `.`.
 - **Forge (GitLab) :** `.gitlab-ci.yml` exécute `npm run generer`, copie les fichiers du site dans `public/` et publie. Sur les autres branches, il ne fait que vérifier.
 - **Hors ligne :** chaque changement de contenu modifie `VERSION` dans `sw.js`, et les navigateurs récupèrent alors la nouvelle version. `outils.js` et les pages passent d'abord par le réseau, pour qu'un nouvel outil apparaisse tout de suite.
 
@@ -205,7 +206,7 @@ Pour tester l'installation et le hors ligne, il faut passer par `npm run apercu`
 
 | Symptôme | Cause et solution |
 |---|---|
-| Pages affiche le README | La source de Pages n'est pas la branche `Clean`. Voir la section 7. |
+| Pages affiche le README | La source de Pages n'est pas la bonne branche, ou les fichiers ont été importés dans un sous-dossier. Voir la section 7 et `IMPORTER-DANS-UN-NOUVEAU-DEPOT.md`. |
 | Un outil n'apparaît pas | `outils.js` n'a pas été régénéré : lancer `npm run generer`, ou vérifier l'onglet Actions de GitHub. |
 | « introuvable, mais X existe » | Erreur de majuscules dans `page` ou dans le nom du dossier. |
 | Page sans réglages ni thème après une modification | L'empreinte CSP n'est plus à jour : `npm run generer`. |
