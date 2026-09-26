@@ -35,8 +35,16 @@ jobs:
           git add -A
           git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -qm "Publication de ${GITHUB_SHA::7}"
           git push -qf "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" gh-pages
-      - name: Demander à Pages de republier
+      - name: Faire publier la branche gh-pages par Pages
         continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh api -X POST "repos/${GITHUB_REPOSITORY}/pages/builds" --silent
+        run: |
+          source=$(gh api "repos/${GITHUB_REPOSITORY}/pages" --jq '.source.branch' || echo "?")
+          echo "Source actuelle de Pages : $source"
+          if [ "$source" != "gh-pages" ]; then
+            gh api -X PUT "repos/${GITHUB_REPOSITORY}/pages" -f "source[branch]=gh-pages" -f "source[path]=/" \
+              && echo "Source de Pages basculée sur gh-pages" \
+              || echo "::warning::Impossible de changer la source automatiquement : Settings > Pages > Branch > gh-pages"
+          fi
+          gh api -X POST "repos/${GITHUB_REPOSITORY}/pages/builds" --silent && echo "Republication demandée"
