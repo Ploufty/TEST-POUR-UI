@@ -3,7 +3,8 @@ import { readdirSync, writeFileSync, existsSync, lstatSync } from 'node:fs';
 import { join } from 'node:path';
 import { createInterface } from 'node:readline';
 import { stdin, stdout } from 'node:process';
-import { OUTILS, FICHE, FICHIER_CATEGORIES, COULEURS, lireJSON, slug, infosPage, construireCatalogue } from './catalogue.mjs';
+import { execFileSync } from 'node:child_process';
+import { RACINE, OUTILS, FICHE, FICHIER_CATEGORIES, COULEURS, lireJSON, slug, infosPage, construireCatalogue } from './catalogue.mjs';
 
 /* ---------- Questions (clavier ou réponses collées en bloc) ---------- */
 const rl = createInterface({ input: stdin, output: stdout, terminal: stdin.isTTY });
@@ -95,11 +96,15 @@ writeFileSync(cheminFiche, JSON.stringify(fiche, null, 2) + '\n');
 rl.close();
 
 const { erreurs } = construireCatalogue();
-console.log(erreurs.length ? `\n⚠ Fiche enregistrée, mais le catalogue signale :\n${erreurs.map(e => '  • ' + e).join('\n')}` : `\n✔ Outils/${dossier}/${FICHE} enregistré et vérifié.`);
+if (erreurs.length) console.log(`\n⚠ Fiche enregistrée, mais le catalogue signale :\n${erreurs.map(e => '  • ' + e).join('\n')}`);
+else {
+  execFileSync(process.execPath, [join(RACINE, 'scripts', 'generer.mjs')], { stdio: 'ignore' }); // met à jour outils.js
+  console.log(`\n✔ Outils/${dossier}/${FICHE} enregistré, page d'accueil mise à jour.`);
+}
 console.log(`
 Étapes suivantes :
-  npm run apercu      voir le résultat sur http://localhost:8080
-  git add Outils
+  ouvrir index.html dans le navigateur pour vérifier
+  git add -A
   git commit -m "Ajout de l'outil ${fiche.titre.replace(/"/g, '')}"
-  git push            la Forge vérifie puis publie
+  git push
 `);

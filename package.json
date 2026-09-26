@@ -6,12 +6,9 @@
   "engines": { "node": ">=18" },
   "scripts": {
     "ajouter": "node scripts/ajouter-outil.mjs",
-    "verifier": "node scripts/compiler.mjs --verifier",
-    "compiler": "node scripts/compiler.mjs && node scripts/securite.mjs",
+    "generer": "node scripts/generer.mjs && node scripts/securite.mjs",
+    "verifier": "node scripts/generer.mjs --verifier",
     "securite": "node scripts/securite.mjs",
-    "apercu": "node scripts/compiler.mjs && npx --yes http-server public -p 8080 -c-1 -o"
-  },
-  "devDependencies": {
-    "esbuild": "^0.25.12"
+    "apercu": "node scripts/generer.mjs && npx --yes http-server . -p 8080 -c-1 -o"
   }
 }

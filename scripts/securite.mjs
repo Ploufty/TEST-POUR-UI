@@ -1,12 +1,11 @@
-// Contrôle de sécurité rapide du site compilé (public/)  →  npm run securite
+// Contrôle de sécurité rapide du projet (tout ce que Pages ou la Forge peut publier)  →  npm run securite
 // ✖ bloque la publication · ⚠ à examiner · ✔ conforme
-import { readdirSync, readFileSync, lstatSync, existsSync } from 'node:fs';
+import { readdirSync, readFileSync, lstatSync } from 'node:fs';
 import { join, extname } from 'node:path';
 import { execSync } from 'node:child_process';
 import { RACINE } from './catalogue.mjs';
 
-const PUB = join(RACINE, 'public');
-if (!existsSync(PUB)) { console.error('✖ public/ absent : lancez d\'abord « npm run compiler ».'); process.exit(1); }
+const PUB = RACINE.replace(/[\\/]$/, '');
 const bloquants = [], aExaminer = [];
 const rel = f => f.slice(PUB.length + 1).replace(/\\/g, '/');
 
@@ -14,6 +13,7 @@ const rel = f => f.slice(PUB.length + 1).replace(/\\/g, '/');
 const fichiers = [];
 (function parcourir(d) {
   for (const f of readdirSync(d)) {
+    if (f === '.git' || f === 'node_modules') continue;
     const p = join(d, f), st = lstatSync(p);
     if (st.isSymbolicLink()) bloquants.push(`${rel(p)} : lien symbolique publié.`);
     else if (st.isDirectory()) parcourir(p);
@@ -22,7 +22,7 @@ const fichiers = [];
 })(PUB);
 
 // 1. Fichiers qui ne doivent jamais être en ligne
-const INTERDITS = /(^|\/)(\.[^/]+|node_modules|package(-lock)?\.json|outil\.json|categories\.json|[^/]*\.(env|pem|key|p12|pfx|sql|sqlite|db|bak|zip|7z|tar|gz|log|psd|docx?|xlsx?|odt|ods))$/i;
+const INTERDITS = /(^|\/)(\.env(\..*)?|[^/]*\.(env|pem|key|p12|pfx|sql|sqlite|db|bak|zip|7z|tar|gz|log|psd|docx?|xlsx?|odt|ods))$/i;
 for (const { p } of fichiers) if (INTERDITS.test(rel(p))) (/\.(docx?|xlsx?|odt|ods|zip)$/i.test(p) ? aExaminer : bloquants).push(`${rel(p)} : type de fichier à ne pas publier (données, sauvegarde, secret ?).`);
 
 // 2. Secrets oubliés dans le code (clés, jetons, mots de passe)
@@ -48,26 +48,23 @@ for (const { p, taille } of fichiers) {
 const accueil = readFileSync(join(PUB, 'index.html'), 'utf8');
 if (!/http-equiv="Content-Security-Policy"/.test(accueil)) bloquants.push('index.html : politique de sécurité (CSP) absente.');
 if (/\son[a-z]+\s*=/i.test(accueil.replace(/<script>[\s\S]*?<\/script>/g, ''))) bloquants.push('index.html : gestionnaire d\'événement dans le HTML (onclick=…), incompatible avec la CSP.');
-if (/<script\b[^>]*\bsrc=/i.test(accueil)) bloquants.push('index.html : script externe chargé.');
+if (/<script\b[^>]*\bsrc=["'](https?:)?\/\//i.test(accueil)) bloquants.push('index.html : script externe chargé.');
 if (/javascript:/i.test(accueil.replace(/<script>[\s\S]*?<\/script>/g, ''))) bloquants.push('index.html : lien javascript: présent.');
 
 // 6. Gros fichiers (lenteur sur les réseaux d'école)
 for (const { p, taille } of fichiers) if (taille > 10e6) aExaminer.push(`${rel(p)} : ${(taille / 1e6).toFixed(1)} Mo, à alléger si possible.`);
 
-// 7. Dépendances de compilation (base de vulnérabilités npm)
-let audit = 'non vérifiées (hors ligne)';
-try {
-  const r = JSON.parse(execSync('npm audit --json', { cwd: RACINE, stdio: ['ignore', 'pipe', 'ignore'], timeout: 30000 }).toString());
-  audit = 'aucune vulnérabilité connue';
-  const v = r.metadata?.vulnerabilities || {};
-  if (v.high || v.critical) bloquants.push(`dépendances npm : ${v.high || 0} vulnérabilité(s) élevée(s), ${v.critical || 0} critique(s) (npm audit fix).`);
-  else if (v.moderate || v.low) audit = `${(v.moderate || 0) + (v.low || 0)} vulnérabilité(s) mineure(s)`;
-} catch (e) {
-  try { const r = JSON.parse(e.stdout?.toString() || ''); const v = r.metadata?.vulnerabilities || {}; if (v.high || v.critical) bloquants.push('dépendances npm : vulnérabilités élevées (npm audit).'); else audit = 'vérifiées'; } catch { /* hors ligne */ }
+// 7. Dépendances npm (aucune aujourd'hui : les scripts n'utilisent que Node.js)
+const pkg = JSON.parse(readFileSync(join(RACINE, 'package.json'), 'utf8'));
+let audit = 'aucune dépendance externe';
+if (Object.keys({ ...pkg.dependencies, ...pkg.devDependencies }).length) {
+  audit = 'non vérifiées (hors ligne)';
+  try { execSync('npm audit --audit-level=high', { cwd: RACINE, stdio: 'ignore', timeout: 30000 }); audit = 'aucune vulnérabilité importante'; }
+  catch (e) { if (e.status) bloquants.push('dépendances npm : vulnérabilité importante (npm audit).'); }
 }
 
 /* ---------- Bilan ---------- */
-console.log(`\nContrôle de sécurité de public/ (${fichiers.length} fichiers)`);
+console.log(`\nContrôle de sécurité du projet (${fichiers.length} fichiers)`);
 if (!bloquants.some(b => b.startsWith('index.html'))) console.log('  ✔ accueil : politique de sécurité (CSP), aucun script externe ni événement dans le HTML');
 if (!bloquants.length) console.log('  ✔ aucun secret, fichier sensible ni lien symbolique publié');
 console.log(`  ✔ dépendances : ${audit}`);

@@ -2,6 +2,9 @@
 <html lang="fr" data-theme="light">
 <head>
 <meta charset="UTF-8">
+<!-- Politique de sécurité : l'empreinte du script ci-dessous est mise à jour par « npm run generer » -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-st4udG2+EKsnYmV8/2Q6iJsiL6TNn0WO3fgZ4HdOfqQ='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' https://cdn.jsdelivr.net; connect-src 'self' https://cdn.jsdelivr.net; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Apps1D76 - Outils numériques</title>
 <meta name="description" content="Outils numériques pour l'école primaire - Mission Numérique Éducatif 76">
@@ -9,8 +12,9 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icones/icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icones/apple-touch-icon.png">
-<link rel="preload" href="polices/Marianne-Regular.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="polices/Marianne-Bold.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.15.3/dist/fonts/Marianne-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.15.3/dist/fonts/Marianne-Bold.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="style.css">
 <!-- Applique les préférences d'affichage avant le premier rendu (évite le flash) -->
 <script>
@@ -38,7 +42,8 @@
 <header>
   <div class="brandbar container">
     <a class="brand" href="./">
-      <img src="logo.png" alt="Logo DSDEN 76" height="46">
+      <!-- Logo : déposer logo.png à la racine puis décommenter la ligne suivante -->
+      <!-- <img src="logo.png" alt="Logo DSDEN 76" height="46"> -->
       <div><b>Apps1D<span>76</span></b><small>Mission Numérique Éducatif 76</small></div>
     </a>
     <div class="actions">
@@ -127,7 +132,8 @@
     </div>
   </form>
 </dialog>
-<!-- Remplacé à la compilation par la liste des outils (lue dans Outils/) + script.js minifié -->
+<!-- outils.js : liste des outils, générée automatiquement à partir du dossier Outils/ (ne pas modifier à la main) -->
+<script src="outils.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

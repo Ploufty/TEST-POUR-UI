@@ -1,5 +1,5 @@
 // Catalogue des outils : parcourt Outils/, lit chaque fiche outil.json et vérifie l'ensemble.
-// Utilisé par la compilation (compiler.mjs) et l'assistant (ajouter-outil.mjs).
+// Utilisé par la mise à jour (generer.mjs) et l'assistant (ajouter-outil.mjs).
 import { readFileSync, existsSync, statSync, readdirSync, lstatSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';

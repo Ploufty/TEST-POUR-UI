@@ -1,43 +1,42 @@
 # Ajouter un outil
 
-**Principe : un outil = un dossier dans `Outils/`.** La page d'accueil le trouve et l'affiche toute seule.
+**Un outil = un dossier dans `Outils/`.** La page d'accueil le trouve et l'affiche toute seule.
 
-## Sur la Forge (sans rien installer)
+## Directement sur GitHub (sans rien installer)
 
-1. Ouvrir le dossier **Outils** du dépôt › **＋ › Nouveau répertoire** (ex. `calcul-flash`, sans accent ni espace de préférence).
-2. **Téléverser** les fichiers de l'outil dans ce dossier (au minimum sa page `index.html`).
-3. Dans le même dossier, **＋ › Nouveau fichier** nommé `outil.json` :
+1. Ouvrir le dossier **Outils** › **Add file › Upload files**.
+2. Glisser **le dossier de l'outil** (avec son `index.html`, ses images, scripts…). Cliquer **Commit changes**.
+3. Dans ce nouveau dossier : **Add file › Create new file**, nommé `outil.json` :
    ```json
    {
      "titre": "Calcul mental flash",
      "description": "Des calculs chronométrés pour travailler les automatismes.",
      "icone": "⚡",
-     "categorie": "maths"
+     "categorie": "vie-de-classe"
    }
    ```
-   Catégories : `langues`, `maths`, `suivi`, `direction`, `autres` (liste complète dans `Outils/categories.json`).
-4. **Valider**. Après 1 à 2 minutes, **Compilation › Pipelines** : ✅ vert = en ligne. ❌ rouge = cliquer pour lire le message, qui indique quoi corriger.
+   Catégories disponibles : voir `Outils/categories.json` (champ `id`).
+4. **Commit changes**. Dans l'onglet **Actions**, la mise à jour tourne (≈ 20 s) : ✅ = page à jour.
+   ❌ = cliquer dessus, le message indique quoi corriger.
 
-> Oublié la fiche ? L'outil apparaît quand même dans « Autres outils ». Il suffit d'ajouter la fiche ensuite.
+> Sans fiche, l'outil s'affiche quand même dans « Autres outils ».
 
 ## Sur son ordinateur
 
 1. Glisser le dossier de l'outil dans `Outils/`.
-2. `npm run ajouter` → choisir le dossier (ceux sans fiche sont proposés en premier), répondre aux questions.
-3. `npm run apercu` pour vérifier, puis :
-   ```bash
-   git add Outils && git commit -m "Ajout de Calcul mental flash" && git push
-   ```
+2. `npm run ajouter` → choisir le dossier, répondre aux questions. La page est mise à jour.
+3. Ouvrir `index.html` pour vérifier, puis envoyer (`git add -A`, `git commit`, `git push`).
 
-## Autres opérations
+## Options de la fiche
 
-| Je veux… | Je fais… |
+| Champ | Rôle |
 |---|---|
-| Retirer un outil | Supprimer son dossier dans `Outils/` |
-| Le changer de catégorie | Modifier `"categorie"` dans son `outil.json` |
-| Changer l'ordre | Ajouter `"ordre": 1`, `2`… dans les fiches (sinon ordre alphabétique) |
-| Page d'entrée autre que index.html | Ajouter `"page": "ma-page.html"` dans la fiche |
-| Créer une catégorie | `npm run ajouter` (option « Nouvelle catégorie ») ou ajouter un bloc dans `Outils/categories.json` |
-| Proposer un outil sans accès au dépôt | Ouvrir un ticket avec le modèle « Nouvel-outil » |
+| `titre`, `description`, `icone`, `categorie` | Obligatoires (description : 160 caractères max) |
+| `page` | Page d'entrée si ce n'est pas `index.html` (ex. `"carnet.html"`) |
+| `ordre` | Position dans la catégorie (1, 2, 3…), sinon ordre alphabétique |
+| `url` | Outil hébergé ailleurs : `"https://…"` (remplace `page`) |
 
-⚠ Ne jamais déposer de données d'élèves, de sauvegardes ou de mots de passe dans un dossier d'outil : le contrôle de sécurité bloquera la publication.
+**Nouvelle catégorie** : ajouter un bloc dans `Outils/categories.json` (couleurs : `bleu`, `rouge`, `vert`, `orange`, `violet`, `turquoise`) ou utiliser `npm run ajouter`.
+**Retirer un outil** : supprimer son dossier.
+
+⚠ Ne jamais déposer de données d'élèves, de sauvegardes ou de mots de passe : la vérification bloquera la mise à jour.

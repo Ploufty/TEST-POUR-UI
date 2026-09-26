@@ -1,7 +1,8 @@
 /* Apps1D76 — service worker : fonctionnement hors ligne.
-   VERSION change automatiquement à chaque compilation : les postes récupèrent la nouvelle version. */
-const VERSION = 'apps1d-dev';            // remplacé à la compilation par une empreinte du contenu
-const CORE = ['./', './index.html'];       // remplacé à la compilation par la liste des fichiers de l'accueil
+   VERSION et CORE sont mis à jour par « npm run generer » : les postes récupèrent la nouvelle version. */
+const VERSION = 'apps1d-169b131b59';
+const CORE = ["./","./index.html","./style.css","./script.js","./outils.js","./manifest.webmanifest","./icones/apple-touch-icon.png","./icones/icon-192.png","./icones/icon-512.png","./icones/icon-maskable-512.png","./icones/icon.svg","https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.15.3/dist/fonts/Marianne-Regular.woff2","https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.15.3/dist/fonts/Marianne-Bold.woff2"];
+const POLICES = 'https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@';
 
 self.addEventListener('install', e => {
   // allSettled : un fichier indisponible ne bloque pas l'installation
@@ -26,10 +27,12 @@ const horsLigne = () => new Response(
 
 self.addEventListener('fetch', e => {
   const req = e.request;
-  if (req.method !== 'GET' || new URL(req.url).origin !== location.origin) return;
-  e.respondWith(req.mode === 'navigate'
-    // Pages (dont l'accueil, qui contient la liste des outils) : réseau d'abord, cache si hors ligne
-    ? fetch(req).then(res => put(req, res)).catch(async () => (await caches.match(req)) || horsLigne())
+  const origine = new URL(req.url).origin === location.origin;
+  if (req.method !== 'GET' || !(origine || req.url.startsWith(POLICES))) return;
+  const frais = req.mode === 'navigate' || (origine && req.url.split(/[?#]/)[0].endsWith('/outils.js'));
+  e.respondWith(frais
+    // Pages et liste des outils : réseau d'abord (toujours à jour), cache si hors ligne
+    ? fetch(req).then(res => put(req, res)).catch(async () => (await caches.match(req)) || (req.mode === 'navigate' ? horsLigne() : Response.error()))
     // Autres fichiers : cache immédiat, mise à jour en arrière-plan
     : caches.match(req).then(cached => {
         const reseau = fetch(req).then(res => put(req, res)).catch(() => cached || Response.error());

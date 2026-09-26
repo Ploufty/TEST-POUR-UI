@@ -1,0 +1,36 @@
+# À chaque envoi sur la branche Clean : relit le dossier Outils/, met à jour outils.js
+# (+ sécurité et hors ligne) et l'enregistre si besoin. Pages publie ensuite la branche telle quelle.
+name: Mettre à jour la page d'accueil
+
+on:
+  push:
+    branches: [Clean]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: mise-a-jour
+  cancel-in-progress: false
+
+jobs:
+  mise-a-jour:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Lire Outils/ et mettre à jour la page
+        run: npm run generer
+      - name: Enregistrer les changements
+        run: |
+          if git diff --quiet; then echo "Page déjà à jour."; exit 0; fi
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -qam "Mise à jour automatique de la liste des outils"
+          git push -q
+      - name: Demander à Pages de republier
+        continue-on-error: true
+        env: { GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
+        run: gh api -X POST "repos/${GITHUB_REPOSITORY}/pages/builds" --silent
