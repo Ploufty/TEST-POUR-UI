@@ -1,402 +1,139 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-theme="light">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Politique de sécurité : l'empreinte du script ci-dessous est mise à jour par « npm run generer » -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-st4udG2+EKsnYmV8/2Q6iJsiL6TNn0WO3fgZ4HdOfqQ='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' https://cdn.jsdelivr.net; connect-src 'self' https://cdn.jsdelivr.net; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Apps1D76 - Outils numériques</title>
 <meta name="description" content="Outils numériques pour l'école primaire - Mission Numérique Éducatif 76">
 <meta name="theme-color" content="#000091">
-<link rel="preload" href="fonts/Marianne-Regular.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="fonts/Marianne-Bold.woff2" as="font" type="font/woff2" crossorigin>
-<script>document.documentElement.className = 'js';</script>
-<style>
-/* ============ 1. POLICE MARIANNE (fichiers dans /fonts) ============ */
-@font-face { font-family: Marianne; src: url(fonts/Marianne-Regular.woff2) format("woff2"); font-weight: 400; font-display: swap; }
-@font-face { font-family: Marianne; src: url(fonts/Marianne-Bold.woff2) format("woff2"); font-weight: 700; font-display: swap; }
-
-/* ============ 2. THÈME — modifier ici pour réutiliser la base ============ */
-:root {
-  --blue: #000091; --blue-soft: #e3e3fd;
-  --red: #e1000f;  --red-soft: #fee9e9;
-  --text: #1e1e2f; --muted: #555566; --border: #e5e5ee;
-  --radius: 16px;
-  --shadow: 0 2px 10px rgba(0, 0, 60, .06);
-  --font: Marianne, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-  --ease: cubic-bezier(.2, .8, .2, 1);
-  --nav-h: 64px;
-}
-/* Couleurs des catégories : --cat (texte/accent, contraste AA) et --cat-soft (fond) */
-.cat-lang  { --cat: #000091; --cat-soft: #e3e3fd; }
-.cat-math  { --cat: #ce0500; --cat-soft: #fee9e9; }
-.cat-suivi { --cat: #18753c; --cat-soft: #dffee6; }
-.cat-dir   { --cat: #a94700; --cat-soft: #fff0e5; }
-
-/* ============ 3. BASE ============ */
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body { font: 400 1rem/1.5 var(--font); color: var(--text); background: #fff; overflow-x: hidden; }
-a { color: inherit; }
-:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; border-radius: 6px; }
-.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-.skip { position: absolute; left: 1rem; top: -3rem; z-index: 100; padding: .5rem 1rem; border-radius: 6px; background: var(--blue); color: #fff; }
-.skip:focus { top: 1rem; }
-.container { max-width: 1120px; margin: 0 auto; padding: 0 1.5rem; }
-
-/* Barre tricolore fixe + progression de lecture */
-.tricolore { height: 4px; background: linear-gradient(90deg, var(--blue) 0 33.3%, #fff 0 66.6%, var(--red) 0); }
-.progress {
-  position: fixed; inset: 0 0 auto; height: 4px; z-index: 60; transform-origin: left; transform: scaleX(var(--p, 0));
-  background: linear-gradient(90deg, var(--blue) 33%, #c9c9ff 50%, var(--red) 67%);
-}
-@supports (animation-timeline: scroll()) {
-  .progress { transform: none; animation: grow linear both; animation-timeline: scroll(); }
-  @keyframes grow { from { transform: scaleX(0); } }
-}
-
-/* ============ 4. FOND ANIMÉ (transform uniquement = fluide) ============ */
-.bg { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
-.blob {
-  position: absolute; border-radius: 45% 55% 60% 40% / 45% 45% 55% 55%; will-change: transform;
-  translate: calc(var(--px, 0) * var(--d)) calc(var(--py, 0) * var(--d));
-  transition: translate .8s var(--ease);
-  animation: drift 26s ease-in-out infinite alternate;
-}
-.blob-a { --d: 30px; width: 560px; height: 560px; top: -220px; left: -200px; background: var(--blue-soft); opacity: .8; }
-.blob-b { --d: -40px; width: 400px; height: 400px; bottom: -160px; right: -120px; background: var(--red-soft); animation-delay: -9s; }
-@keyframes drift { to { transform: translate(70px, 50px) rotate(30deg); } }
-
-/* ============ 5. EN-TÊTE & HERO ============ */
-.brandbar { display: flex; align-items: center; padding-block: 1.1rem; }
-.brand { display: flex; align-items: center; gap: .9rem; text-decoration: none; }
-.brand img { height: 46px; width: auto; }
-.brand b { display: block; font-size: 1.25rem; color: var(--blue); }
-.brand b span { color: var(--red); }
-.brand small { font-size: .85rem; color: var(--muted); }
-
-.hero { position: relative; padding: 2.5rem 0 2.75rem; text-align: center; }
-.hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
-.hero .container { position: relative; }
-.hero h1 { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 700; color: var(--blue); letter-spacing: -.03em; line-height: 1.1; }
-.hero h1 span { display: inline-block; }
-.js .hero h1 span { opacity: 0; transform: translateY(.6em) rotate(3deg); animation: rise .8s var(--ease) forwards; animation-delay: calc(var(--w) * 90ms + 100ms); }
-@keyframes rise { to { opacity: 1; transform: none; } }
-.hero h1 .accent { position: relative; color: var(--red); }
-.accent svg { position: absolute; left: -2%; bottom: -.28em; width: 104%; height: .45em; overflow: visible; }
-.accent path { fill: none; stroke: var(--red); stroke-width: 5; stroke-linecap: round; stroke-dasharray: 320; stroke-dashoffset: 320; animation: draw 1s 1s var(--ease) forwards; }
-@keyframes draw { to { stroke-dashoffset: 0; } }
-.hero p { max-width: 34rem; margin: 1.1rem auto 1.6rem; font-size: 1.08rem; color: var(--muted); }
-
-.search { position: relative; max-width: 440px; margin: 0 auto; }
-.search input {
-  width: 100%; padding: .9rem 1rem .9rem 2.9rem; font: inherit; color: var(--text);
-  border: 2px solid var(--border); border-radius: 999px; background: rgba(255, 255, 255, .92); box-shadow: var(--shadow);
-  transition: border-color .25s, box-shadow .25s;
-}
-.search input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 5px rgba(0, 0, 145, .12); }
-.search svg { position: absolute; left: 1.05rem; top: 50%; translate: 0 -50%; width: 18px; height: 18px; color: var(--muted); }
-
-/* ============ 6. MENU DES CATÉGORIES ============ */
-.catnav { position: sticky; top: 0; z-index: 50; background: rgba(255, 255, 255, .95); border-bottom: 1px solid var(--border); transition: box-shadow .3s; }
-.catnav.stuck { box-shadow: 0 6px 20px rgba(0, 0, 60, .07); }
-.catnav ul { position: relative; display: flex; align-items: center; justify-content: center; gap: .5rem; height: var(--nav-h); list-style: none; overflow-x: auto; scrollbar-width: none; }
-.catnav ul::-webkit-scrollbar { display: none; }
-.catnav a {
-  display: inline-flex; align-items: center; gap: .5rem; padding: .5rem .95rem; white-space: nowrap;
-  font-size: .92rem; font-weight: 700; text-decoration: none; border: 1.5px solid transparent; border-radius: 999px;
-  transition: background .3s, color .3s, border-color .3s;
-}
-.catnav a::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--cat); transition: transform .3s var(--ease); }
-.catnav a:hover { border-color: var(--cat); }
-.catnav a:hover::before { transform: scale(1.4); }
-.catnav a[aria-current="true"] { background: var(--cat); color: #fff; }
-.catnav a[aria-current="true"]::before { background: #fff; }
-.count { min-width: 1.4rem; padding: 0 .35rem; font-size: .75rem; text-align: center; border-radius: 999px; background: var(--cat-soft); color: var(--cat); }
-[aria-current="true"] .count { background: rgba(255, 255, 255, .25); color: #fff; }
-.short { display: none; }
-
-/* ============ 7. CATÉGORIES & CARTES ============ */
-.main { padding-block: 1rem 3rem; }
-.category { padding-top: 2.25rem; scroll-margin-top: calc(var(--nav-h) + 1rem); }
-.cat-head { display: flex; align-items: center; gap: .85rem; margin-bottom: 1.25rem; }
-.cat-icon { flex: none; display: grid; place-items: center; width: 44px; height: 44px; font-size: 1.3rem; border-radius: 12px; background: var(--cat); }
-.cat-head h2 { font-size: 1.45rem; font-weight: 700; line-height: 1.2; color: var(--cat); }
-.cat-head p { font-size: .92rem; color: var(--muted); }
-.cat-line { flex: 1; height: 2px; border-radius: 2px; background: linear-gradient(90deg, var(--cat), transparent); transform-origin: left; }
-
-.grid { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); list-style: none; }
-
-.js .cat-line { transform: scaleX(0); transition: transform 1.1s var(--ease) .15s; }
-.js .grid > li { opacity: 0; transform: translateY(28px) scale(.97); transition: opacity .7s var(--ease), transform .7s var(--ease); transition-delay: calc(var(--i, 0) * 90ms); }
-.js .in .cat-line, .js .in .grid > li { opacity: 1; transform: none; }
-
-.card {
-  --rx: 0deg; --ry: 0deg; --lift: 0px; --mx: 50%; --my: 50%;
-  position: relative; isolation: isolate; display: flex; flex-direction: column; gap: .6rem; height: 100%;
-  padding: 1.5rem 1.4rem 1.25rem; text-decoration: none;
-  background: #fff; border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow);
-  transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry)) translateY(var(--lift));
-  transition: transform .45s var(--ease), box-shadow .45s var(--ease), border-color .3s;
-}
-/* Bordure dégradée tournante */
-.card::before {
-  content: ""; position: absolute; inset: -1px; z-index: -1; padding: 2px; border-radius: inherit; opacity: 0; transition: opacity .35s;
-  background: conic-gradient(from var(--angle), var(--cat), var(--cat-soft), var(--cat));
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude;
-}
-/* Halo qui suit la souris */
-.card::after {
-  content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; opacity: 0; transition: opacity .35s;
-  background: radial-gradient(280px circle at var(--mx) var(--my), var(--cat-soft), transparent 65%);
-}
-.card:hover, .card:focus-visible {
-  --lift: -8px; border-color: transparent;
-  box-shadow: 0 22px 40px -12px rgba(0, 0, 60, .25);
-  box-shadow: 0 22px 40px -12px color-mix(in srgb, var(--cat) 35%, transparent);
-}
-.card:hover::before, .card:focus-visible::before { opacity: 1; animation: spin 3s linear infinite; }
-.card:hover::after, .card:focus-visible::after { opacity: 1; }
-@property --angle { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
-@keyframes spin { to { --angle: 360deg; } }
-
-.card i { display: grid; place-items: center; width: 54px; height: 54px; font-size: 1.65rem; font-style: normal; border-radius: 15px; background: var(--cat-soft); transition: transform .5s var(--ease); }
-.card:hover i { transform: translateY(-3px) rotate(-10deg) scale(1.12); }
-.card h3 { font-size: 1.08rem; font-weight: 700; line-height: 1.3; }
-.card p { flex: 1; font-size: .93rem; color: var(--muted); }
-.card span { display: inline-flex; align-items: center; gap: .35rem; margin-top: .3rem; font-size: .9rem; font-weight: 700; color: var(--cat); }
-.card span::after {
-  content: ""; width: 16px; height: 16px; background: currentColor; transition: transform .35s var(--ease);
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23000' stroke-width='2'%3E%3Cpath d='M3 8h10M9 4l4 4-4 4'/%3E%3C/svg%3E") center / contain no-repeat;
-          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23000' stroke-width='2'%3E%3Cpath d='M3 8h10M9 4l4 4-4 4'/%3E%3C/svg%3E") center / contain no-repeat;
-}
-.card:hover span::after { transform: translateX(5px); }
-
-.empty, .soon { text-align: center; color: var(--muted); }
-.empty { padding: 3rem 1rem; }
-.soon { margin-top: 3rem; font-size: .95rem; }
-.soon::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: .5rem; vertical-align: middle; border-radius: 50%; background: var(--red); animation: pulse 2s ease-in-out infinite; }
-@keyframes pulse { 50% { transform: scale(1.7); opacity: .35; } }
-
-/* ============ 8. PIED DE PAGE ============ */
-.footer { padding: 1.5rem; text-align: center; font-size: .88rem; color: var(--muted); border-top: 1px solid var(--border); background: rgba(255, 255, 255, .9); }
-
-/* ============ 9. ACCESSIBILITÉ & RESPONSIVE ============ */
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after { animation: none !important; transition: none !important; }
-  .js .hero h1 span, .js .grid > li, .js .cat-line { opacity: 1; transform: none; }
-  .accent path { stroke-dashoffset: 0; }
-  .hero canvas, .progress { display: none; }
-}
-@media (max-width: 760px) {
-  .catnav ul { justify-content: flex-start; }
-  .long { display: none; }
-  .short { display: inline; }
-}
-@media (max-width: 600px) {
-  .container { padding: 0 1rem; }
-  .brandbar { justify-content: center; text-align: center; }
-  .brand { flex-direction: column; gap: .4rem; }
-  .hero { padding: 1.5rem 0 2rem; }
-  .blob-a { width: 340px; height: 340px; }
-  .blob-b { width: 260px; height: 260px; }
-}
-</style>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icones/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icones/apple-touch-icon.png">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.15.3/dist/fonts/Marianne-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.15.3/dist/fonts/Marianne-Bold.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="style.css">
+<!-- Applique les préférences d'affichage avant le premier rendu (évite le flash) -->
+<script>
+(function (d, p) {
+  try { p = JSON.parse(localStorage.getItem('apps1d-prefs')) || {}; } catch (e) { p = {}; }
+  var mq = function (q) { return window.matchMedia && matchMedia(q).matches; };
+  d.dataset.theme = p.theme === 'dark' || (p.theme !== 'light' && mq('(prefers-color-scheme: dark)')) ? 'dark' : 'light';
+  d.dataset.motion = p.motion === 'reduce' || (p.motion !== 'on' && mq('(prefers-reduced-motion: reduce)')) ? 'reduce' : 'full';
+  d.dataset.contrast = p.contrast ? 'high' : 'normal';
+  d.style.setProperty('--text-scale', ({ 115: 1.15, 130: 1.3 })[p.text] || 1);
+  d.classList.add('js');
+})(document.documentElement);
+</script>
 </head>
 <body>
 <a class="skip" href="#main">Aller aux outils</a>
 <div class="progress" aria-hidden="true"></div>
-<div class="bg" aria-hidden="true"><div class="blob blob-a"></div><div class="blob blob-b"></div></div>
+<div class="bg" aria-hidden="true">
+  <div class="layer layer-a"><div class="blob blob-a"></div></div>
+  <div class="layer layer-b"><div class="blob blob-b"></div></div>
+  <div class="layer layer-c"><div class="dots"></div></div>
+</div>
 <div class="tricolore" aria-hidden="true"></div>
 
 <header>
-<div class="brandbar container">
-  <a class="brand" href="./">
-    <img src="images/Logo_DSDEN76.png" alt="Logo DSDEN 76" height="46" onerror="this.remove()">
-    <div><b>Apps1D<span>76</span></b><small>Mission Numérique Éducatif 76</small></div>
-  </a>
-</div>
-
-<section class="hero">
-  <canvas aria-hidden="true"></canvas>
-  <div class="container">
-    <h1><span style="--w:0">Des</span> <span style="--w:1">outils</span> <span style="--w:2">numériques</span> <span class="accent" style="--w:3">pour l'école<svg viewBox="0 0 300 20" preserveAspectRatio="none" aria-hidden="true"><path d="M4 14C80 4 200 4 296 12"/></svg></span></h1>
-    <p>Des ressources simples et gratuites pour les enseignants et les directeurs du 1<sup>er</sup> degré.</p>
-    <div class="search" role="search">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-      <label for="q" class="sr-only">Rechercher un outil</label>
-      <input id="q" type="search" placeholder="Rechercher un outil…" autocomplete="off">
+  <div class="brandbar container">
+    <a class="brand" href="./">
+      <!-- Logo : déposer logo.png à la racine puis décommenter la ligne suivante -->
+      <!-- <img src="logo.png" alt="Logo DSDEN 76" height="46"> -->
+      <div><b>Apps1D<span>76</span></b><small>Mission Numérique Éducatif 76</small></div>
+    </a>
+    <div class="actions">
+      <button type="button" class="icon-btn" id="theme-toggle" aria-label="Activer le mode sombre">
+        <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M4.6 19.4l2.1-2.1M17.3 6.7l2.1-2.1"/></svg>
+      </button>
+      <button type="button" class="icon-btn" id="settings-open" aria-haspopup="dialog" aria-controls="settings">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+        <span class="btn-label">Affichage</span>
+      </button>
     </div>
   </div>
-</section>
+
+  <section class="hero">
+    <canvas aria-hidden="true"></canvas>
+    <div class="container hero-content">
+      <h1><span style="--w:0">Des</span> <span style="--w:1">outils</span> <span style="--w:2">numériques</span> <span class="accent" style="--w:3">pour l'école<svg viewBox="0 0 300 20" preserveAspectRatio="none" aria-hidden="true"><path d="M4 14C80 4 200 4 296 12"/></svg></span></h1>
+      <p>Des ressources simples et gratuites pour les enseignants et les directeurs du 1<sup>er</sup> degré.</p>
+      <div class="search" role="search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <label for="q" class="sr-only">Rechercher un outil</label>
+        <input id="q" type="search" placeholder="Rechercher un outil…" autocomplete="off">
+      </div>
+    </div>
+  </section>
 </header>
 
-<!-- Menu généré automatiquement à partir des sections .category -->
 <nav class="catnav" aria-label="Catégories"><ul class="container" id="catnav"></ul></nav>
 
 <main class="main container" id="main">
-<!--
-  AJOUTER UN OUTIL : copier un <li> dans la bonne catégorie.
-  AJOUTER UNE CATÉGORIE : copier une <section class="category cat-xxx">,
-  changer id, data-label, data-short, et déclarer .cat-xxx dans le CSS (section 2).
--->
-
-<section class="category cat-lang" id="langues" data-label="Français & langues" data-short="Français">
-  <div class="cat-head"><span class="cat-icon" aria-hidden="true">📖</span><div><h2>Français &amp; langues</h2><p>Lecture, littérature et langues vivantes</p></div><span class="cat-line"></span></div>
-  <ul class="grid">
-    <li><a class="card" href="./prompteurs/index.html"><i aria-hidden="true">▶️</i><h3>Prompteurs de lecture</h3><p>Aide à la lecture avec défilement automatique pour améliorer la fluence.</p><span>Ouvrir</span></a></li>
-    <li><a class="card" href="./Litteranum/index.html"><i aria-hidden="true">📚</i><h3>Littérature et numérique</h3><p>Albums et documentaires pour travailler le numérique en classe.</p><span>Ouvrir</span></a></li>
-    <li><a class="card" href="./250consignes/index.html"><i aria-hidden="true">🙋</i><h3>250 consignes en LVE</h3><p>Consignes de classe en allemand, anglais, espagnol et portugais.</p><span>Ouvrir</span></a></li>
-  </ul>
-</section>
-
-<section class="category cat-math" id="maths" data-label="Mathématiques" data-short="Maths">
-  <div class="cat-head"><span class="cat-icon" aria-hidden="true">🔢</span><div><h2>Mathématiques</h2><p>Calcul et automatismes</p></div><span class="cat-line"></span></div>
-  <ul class="grid">
-    <li><a class="card" href="./course/index.html"><i aria-hidden="true">🏃</i><h3>Course aux nombres</h3><p>Générateur de fiches d'entraînement au calcul (CE1 pour le moment).</p><span>Ouvrir</span></a></li>
-  </ul>
-</section>
-
-<section class="category cat-suivi" id="suivi" data-label="Suivi & évaluation" data-short="Suivi">
-  <div class="cat-head"><span class="cat-icon" aria-hidden="true">✅</span><div><h2>Suivi &amp; évaluation</h2><p>Suivre les progrès et aider les élèves</p></div><span class="cat-line"></span></div>
-  <ul class="grid">
-    <li><a class="card" href="./carnet.html"><i aria-hidden="true">📒</i><h3>Carnet de suivi Maternelle</h3><p>Suivi des apprentissages de ses élèves par domaine de compétence.</p><span>Ouvrir</span></a></li>
-    <li><a class="card" href="./evalaide/index.html"><i aria-hidden="true">🔍</i><h3>Éval'aide numérique</h3><p>Ressources associées aux compétences des évaluations nationales, du CP au CM2.</p><span>Ouvrir</span></a></li>
-  </ul>
-</section>
-
-<section class="category cat-dir" id="direction" data-label="Direction d'école" data-short="Direction">
-  <div class="cat-head"><span class="cat-icon" aria-hidden="true">🏫</span><div><h2>Direction d'école</h2><p>Organiser la vie de l'école</p></div><span class="cat-line"></span></div>
-  <ul class="grid">
-    <li><a class="card" href="./outildir/orga_recre.html"><i aria-hidden="true">🕒</i><h3>Planning de récréation</h3><p>Qui surveille quand ? Un organiseur simple avec étiquettes déplaçables.</p><span>Ouvrir</span></a></li>
-    <li><a class="card" href="./outildir/ThunderStruct.html"><i aria-hidden="true">📆</i><h3>Planifier ses classes n+1</h3><p>Répartition des élèves dans les classes pour préparer la rentrée.</p><span>Ouvrir</span></a></li>
-  </ul>
-</section>
-
-<p class="empty" id="empty" role="status" hidden>Aucun outil ne correspond à votre recherche.</p>
-<p class="soon">D'autres outils arrivent bientôt</p>
+  <div id="categories"></div>
+  <p class="empty" id="empty" role="status" hidden>Aucun outil ne correspond à votre recherche.</p>
+  <p class="soon">D'autres outils arrivent bientôt</p>
+  <noscript><p class="empty">Activez JavaScript pour afficher la liste des outils.</p></noscript>
 </main>
 
 <footer class="footer">Académie de Normandie · Seine-Maritime (76) · Conçu pour faciliter l'apprentissage</footer>
 
-<script>
-(() => {
-  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const fine = matchMedia('(pointer: fine)').matches;
-  const raf = fn => { let q = 0; return e => { if (!q) q = requestAnimationFrame(() => { q = 0; fn(e); }); }; };
-  const sections = $$('.category');
-  const nav = document.getElementById('catnav');
+<!-- Paramètres d'affichage -->
+<dialog id="settings" aria-labelledby="settings-title">
+  <form method="dialog" class="settings">
+    <div class="settings-head">
+      <h2 id="settings-title">Paramètres d'affichage</h2>
+      <button type="submit" class="icon-btn" value="close" aria-label="Fermer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
 
-  /* Menu des catégories */
-  nav.innerHTML = sections.map(s => {
-    const n = $$('.grid > li', s).length, cat = [...s.classList].find(c => c.startsWith('cat-'));
-    return `<li><a href="#${s.id}" class="${cat}"><span class="long">${s.dataset.label}</span><span class="short">${s.dataset.short}</span><span class="count" aria-label="${n} outils">${n}</span></a></li>`;
-  }).join('');
-  const links = $$('a', nav);
-  const linkOf = id => links.find(a => a.hash === '#' + id);
+    <fieldset>
+      <legend>Thème</legend>
+      <div class="seg">
+        <label><input type="radio" name="theme" value="light"><span>Clair</span></label>
+        <label><input type="radio" name="theme" value="dark"><span>Sombre</span></label>
+        <label><input type="radio" name="theme" value="auto"><span>Système</span></label>
+      </div>
+    </fieldset>
 
-  /* Catégorie active */
-  const spy = new IntersectionObserver(es => es.forEach(e => {
-    if (!e.isIntersecting) return;
-    links.forEach(a => a.setAttribute('aria-current', a.hash === '#' + e.target.id));
-    const a = linkOf(e.target.id);
-    nav.scrollTo({ left: a.offsetLeft - (nav.clientWidth - a.offsetWidth) / 2, behavior: reduce ? 'auto' : 'smooth' });
-  }), { rootMargin: '-35% 0px -60% 0px' });
+    <fieldset>
+      <legend>Taille du texte</legend>
+      <div class="seg">
+        <label><input type="radio" name="text" value="100"><span>Normale</span></label>
+        <label><input type="radio" name="text" value="115"><span class="t115">Grande</span></label>
+        <label><input type="radio" name="text" value="130"><span class="t130">Très grande</span></label>
+      </div>
+    </fieldset>
 
-  /* Apparition au défilement */
-  const reveal = new IntersectionObserver(es => es.forEach(e => {
-    if (e.isIntersecting) { e.target.classList.add('in'); reveal.unobserve(e.target); }
-  }), { threshold: .12 });
-  sections.forEach(s => {
-    $$('.grid > li', s).forEach((li, i) => li.style.setProperty('--i', i));
-    spy.observe(s); reveal.observe(s);
-  });
+    <fieldset>
+      <legend>Animations</legend>
+      <div class="seg">
+        <label><input type="radio" name="motion" value="on"><span>Activées</span></label>
+        <label><input type="radio" name="motion" value="reduce"><span>Réduites</span></label>
+        <label><input type="radio" name="motion" value="auto"><span>Système</span></label>
+      </div>
+    </fieldset>
 
-  /* Ombre du menu quand il est collé */
-  const hero = document.querySelector('.hero'), catnav = nav.parentElement;
-  new IntersectionObserver(([e]) => catnav.classList.toggle('stuck', !e.isIntersecting)).observe(hero);
+    <label class="switch"><input type="checkbox" name="contrast"><span>Contraste renforcé</span></label>
 
-  /* Barre de progression (repli si pas de scroll-timeline CSS) */
-  if (!CSS.supports('animation-timeline: scroll()')) {
-    const bar = document.querySelector('.progress'), h = document.documentElement;
-    const upd = raf(() => bar.style.setProperty('--p', h.scrollTop / Math.max(1, h.scrollHeight - h.clientHeight)));
-    addEventListener('scroll', upd, { passive: true }); upd();
-  }
+    <div class="install" id="install" hidden>
+      <p><strong>Installer l'application</strong><br>Accès direct depuis l'écran d'accueil, même hors connexion.</p>
+      <button type="button" class="btn" id="install-btn" hidden>Installer</button>
+      <p class="ios-hint" id="ios-hint" hidden>Sur iPad / iPhone : touchez <b>Partager</b> puis <b>Sur l'écran d'accueil</b>.</p>
+    </div>
 
-  /* Recherche (insensible aux accents) */
-  const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
-  const items = $$('.grid > li').map(li => ({ li, txt: norm(li.textContent), sec: li.closest('.category') }));
-  const empty = document.getElementById('empty');
-  document.getElementById('q').addEventListener('input', e => {
-    const q = norm(e.target.value.trim());
-    const counts = new Map(sections.map(s => [s, 0]));
-    items.forEach(it => { const ok = !q || it.txt.includes(q); it.li.hidden = !ok; if (ok) counts.set(it.sec, counts.get(it.sec) + 1); });
-    counts.forEach((n, s) => { s.hidden = !n; s.classList.add('in'); linkOf(s.id).parentElement.hidden = !n; });
-    empty.hidden = [...counts.values()].some(Boolean);
-  });
-
-  if (reduce) return;
-
-  if (fine) {
-    /* Cartes : inclinaison 3D légère + halo */
-    $$('.card').forEach(card => {
-      card.addEventListener('pointermove', raf(e => {
-        const r = card.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
-        card.style.cssText = `--mx:${x * 100}%;--my:${y * 100}%;--ry:${(x - .5) * 4}deg;--rx:${(.5 - y) * 4}deg`;
-      }));
-      card.addEventListener('pointerleave', () => requestAnimationFrame(() => card.style.cssText = ''));
-    });
-    /* Parallaxe du fond */
-    const bg = document.querySelector('.bg');
-    addEventListener('pointermove', raf(e => {
-      bg.style.cssText = `--px:${(e.clientX / innerWidth - .5).toFixed(3)};--py:${(e.clientY / innerHeight - .5).toFixed(3)}`;
-    }), { passive: true });
-  }
-
-  /* Constellation bleu / rouge (active seulement quand le hero est visible) */
-  const cv = hero.querySelector('canvas'), ctx = cv.getContext('2d');
-  const LINK = 120, LINK2 = LINK * LINK;
-  let W, H, pts = [], mx = -1e4, my = -1e4, running = false, timer;
-  const init = () => {
-    const dpr = Math.min(devicePixelRatio || 1, 2);
-    W = hero.clientWidth; H = hero.clientHeight;
-    cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    pts = Array.from({ length: Math.round(Math.min(70, W * H / 12000)) }, (_, i) => ({
-      x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - .5) * .35, vy: (Math.random() - .5) * .35,
-      r: Math.random() * 1.8 + 1, c: i % 5 ? '0,0,145' : '225,0,15'
-    }));
-  };
-  const frame = () => {
-    if (!running) return;
-    ctx.clearRect(0, 0, W, H);
-    for (const p of pts) {
-      p.x += p.vx; p.y += p.vy;
-      if (p.x < 0 || p.x > W) p.vx *= -1;
-      if (p.y < 0 || p.y > H) p.vy *= -1;
-      const dx = p.x - mx, dy = p.y - my, d2 = dx * dx + dy * dy;
-      if (d2 < 19600) { const d = Math.sqrt(d2) || 1; p.x += dx / d * .6; p.y += dy / d * .6; }
-    }
-    ctx.lineWidth = 1;
-    for (let i = 0; i < pts.length; i++) {
-      const a = pts[i];
-      for (let j = i + 1; j < pts.length; j++) {
-        const b = pts[j], dx = a.x - b.x, dy = a.y - b.y, d2 = dx * dx + dy * dy;
-        if (d2 < LINK2) {
-          ctx.strokeStyle = `rgba(${a.c},${(1 - Math.sqrt(d2) / LINK) * .18})`;
-          ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
-        }
-      }
-      ctx.fillStyle = `rgba(${a.c},.35)`;
-      ctx.beginPath(); ctx.arc(a.x, a.y, a.r, 0, 6.2832); ctx.fill();
-    }
-    requestAnimationFrame(frame);
-  };
-  hero.addEventListener('pointermove', e => { const r = hero.getBoundingClientRect(); mx = e.clientX - r.left; my = e.clientY - r.top; });
-  hero.addEventListener('pointerleave', () => { mx = my = -1e4; });
-  new IntersectionObserver(([e]) => { const was = running; running = e.isIntersecting; if (running && !was) requestAnimationFrame(frame); }).observe(hero);
-  addEventListener('resize', () => { clearTimeout(timer); timer = setTimeout(init, 200); });
-  init();
-})();
-</script>
+    <div class="settings-foot">
+      <button type="button" class="btn btn-ghost" id="reset">Réinitialiser</button>
+      <button type="submit" class="btn" value="close">Fermer</button>
+    </div>
+  </form>
+</dialog>
+<!-- outils.js : liste des outils, générée automatiquement à partir du dossier Outils/ (ne pas modifier à la main) -->
+<script src="outils.js"></script>
+<script src="script.js"></script>
 </body>
 </html>

@@ -1,0 +1,20 @@
+# Forge (GitLab) : met à jour la liste des outils, contrôle la sécurité, publie sur GitLab Pages.
+image: node:22-alpine
+
+verifier:
+  stage: test
+  script: [npm run generer]
+  rules:
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+
+pages:
+  stage: deploy
+  script:
+    - npm run generer
+    - mkdir public
+    - cp -r index.html style.css script.js outils.js sw.js manifest.webmanifest icones Outils public/
+    - if [ -f logo.png ]; then cp logo.png public/; fi
+  artifacts:
+    paths: [public]
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

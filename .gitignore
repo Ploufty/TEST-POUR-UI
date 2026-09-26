@@ -1,3 +1,2 @@
-__pycache__/
-*.pyc
-fonts/
+node_modules/
+public/

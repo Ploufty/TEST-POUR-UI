@@ -1,0 +1,14 @@
+{
+  "name": "apps1d76",
+  "private": true,
+  "description": "Page d'accueil des outils numériques - Mission Numérique Éducatif 76",
+  "type": "module",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "ajouter": "node scripts/ajouter-outil.mjs",
+    "generer": "node scripts/generer.mjs && node scripts/securite.mjs",
+    "verifier": "node scripts/generer.mjs --verifier",
+    "securite": "node scripts/securite.mjs",
+    "apercu": "node scripts/generer.mjs && npx --yes http-server . -p 8080 -c-1 -o"
+  }
+}
