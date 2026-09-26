@@ -38,5 +38,13 @@
     "description": "Outils en cours de classement",
     "icone": "🧩",
     "couleur": "violet"
+  },
+  {
+    "id": "vie-de-classe",
+    "titre": "Vie de classe",
+    "court": "Classe",
+    "description": "Animer et organiser la classe",
+    "icone": "🎯",
+    "couleur": "turquoise"
   }
 ]

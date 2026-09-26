@@ -17,6 +17,7 @@ accueil/                   ← la page d'accueil (design) — à ne modifier que
   icones/   polices/ (Marianne)   logo.png (facultatif)
 scripts/                   ← compilation, assistant, contrôle de sécurité (ne pas modifier)
 AJOUTER-UN-OUTIL.md        ← guide pas à pas pour les collègues
+a-migrer/                  ← fiches des outils de l'ancien site, en attente de leurs fichiers (non publié)
 ```
 
 Le site publié ne contient **que** la page d'accueil et le dossier `Outils/` : scripts, fiches, fichiers cachés
