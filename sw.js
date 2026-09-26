@@ -1,6 +1,6 @@
 /* Apps1D76 — service worker : fonctionnement hors ligne.
    VERSION et CORE sont mis à jour par « npm run generer » : les postes récupèrent la nouvelle version. */
-const VERSION = 'apps1d-169b131b59';
+const VERSION = 'apps1d-fd9d349034';
 const CORE = ["./","./index.html","./style.css","./script.js","./outils.js","./manifest.webmanifest","./icones/apple-touch-icon.png","./icones/icon-192.png","./icones/icon-512.png","./icones/icon-maskable-512.png","./icones/icon.svg","https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.15.3/dist/fonts/Marianne-Regular.woff2","https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.15.3/dist/fonts/Marianne-Bold.woff2"];
 const POLICES = 'https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@';
 

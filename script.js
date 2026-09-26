@@ -57,7 +57,7 @@
   $('#reset').addEventListener('click', () => { prefs = { ...DEF }; save(); apply(); syncForm(); });
   dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); }); // clic sur le fond = fermer
 
-  /* ================= 2. RENDU DES OUTILS (liste intégrée à la compilation depuis Outils/) ================= */
+  /* ================= 2. RENDU DES OUTILS (window.APPS1D, défini dans outils.js) ================= */
   const data = window.APPS1D?.categories || [];
   const box = $('#categories'), nav = $('#catnav');
   box.innerHTML = data.map(c => `

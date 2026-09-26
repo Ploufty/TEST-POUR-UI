@@ -24,6 +24,8 @@ scripts/                ← assistant, mise à jour, sécurité (ne pas modifier
 
 Détails et exemples : **[AJOUTER-UN-OUTIL.md](AJOUTER-UN-OUTIL.md)**.
 
+Comment le code est organisé, comment le modifier : **[CLAUDE.md](CLAUDE.md)** (guide de développement).
+
 ## Commandes (facultatives, Node.js 18+)
 
 | Commande | Effet |
