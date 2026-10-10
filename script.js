@@ -31,8 +31,9 @@
     root.dataset.contrast = prefs.contrast ? 'high' : 'normal';
     root.style.setProperty('--text-scale', prefs.text / 100);
     themeBtn.setAttribute('aria-label', dark ? 'Activer le mode clair' : 'Activer le mode sombre');
-    metaTheme.content = dark ? '#11111b' : '#000091';
     anim.refresh();
+    const cs = getComputedStyle(root); // barre du navigateur sur mobile : couleur de la palette (fond en sombre)
+    metaTheme.content = cs.getPropertyValue(dark ? '--bg' : '--primaire').trim();
   }
   darkMq.addEventListener?.('change', () => prefs.theme === 'auto' && apply());
   motionMq.addEventListener?.('change', () => prefs.motion === 'auto' && apply());
@@ -165,11 +166,11 @@
         for (let j = i + 1; j < pts.length; j++) {
           const b = pts[j], dx = a.x - b.x, dy = a.y - b.y, d2 = dx * dx + dy * dy;
           if (d2 < LINK2) {
-            ctx.strokeStyle = `rgba(${c},${(1 - Math.sqrt(d2) / LINK) * .2})`;
+            ctx.strokeStyle = c; ctx.globalAlpha = (1 - Math.sqrt(d2) / LINK) * .2;
             ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
           }
         }
-        ctx.fillStyle = `rgba(${c},.4)`;
+        ctx.fillStyle = c; ctx.globalAlpha = .4;
         ctx.beginPath(); ctx.arc(a.x, a.y, a.r, 0, 6.2832); ctx.fill();
       }
       requestAnimationFrame(frame);
@@ -184,7 +185,7 @@
     return {
       refresh() { // appelé à chaque changement de préférences
         const cs = getComputedStyle(root);
-        ca = cs.getPropertyValue('--rgb-a').trim(); cb = cs.getPropertyValue('--rgb-b').trim();
+        ca = cs.getPropertyValue('--primaire').trim(); cb = cs.getPropertyValue('--accent').trim();
         if (motionOn()) { onScroll(); start(); }
         else { bg.style.removeProperty('--s'); heroContent.style.removeProperty('--h'); }
       }

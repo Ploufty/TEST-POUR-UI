@@ -37,6 +37,11 @@ Comment le code est organisé, comment le modifier : **[CLAUDE.md](CLAUDE.md)** 
 
 Sans Node.js : il suffit d'envoyer sur GitHub, la mise à jour se fait en ligne (onglet **Actions**).
 
+## Changer les couleurs
+
+Dans `index.html`, remplacer `data-palette="republique"` par `ocean`, `foret`, `aubergine` ou `ardoise`.
+Pour créer sa propre palette : voir `CLAUDE.md`, section « Changer les couleurs du site ».
+
 ## Publication
 
 - **GitHub Pages** : Settings › Pages › *Deploy from a branch* › **main** (ou **Clean** dans le dépôt de test) / (root).

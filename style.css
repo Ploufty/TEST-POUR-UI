@@ -1,6 +1,6 @@
 /* =====================================================================
    Apps1D76 — feuille de style partagée
-   1. Police  2. Thème (clair / sombre / contraste)  3. Couleurs de catégories
+   1. Police  2. Palettes et thème (clair / sombre / contraste)  3. Couleurs de catégories
    4. Base  5. Fond animé  6. En-tête & hero  7. Menu  8. Cartes
    9. Paramètres d'affichage  10. Animations réduites  11. Responsive
    ===================================================================== */
@@ -10,13 +10,28 @@
 @font-face { font-family: Marianne; src: url(https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.15.3/dist/fonts/Marianne-Bold.woff2) format("woff2"); font-weight: 700; font-display: swap; }
 
 /* ---------- 2. THÈME ---------- */
+/* 2a. PALETTES DU SITE — choisir dans index.html : <html data-palette="republique">
+   Chaque palette = 4 couleurs : primaire (titres, boutons) et accent (mots en couleur, détails),
+   en version claire puis sombre. Pour en créer une : copier un bloc, changer le nom et les 4 couleurs
+   (contraste d'au moins 4,5:1 sur blanc pour le clair, sur #1c1c2b pour le sombre). */
+:root, [data-palette="republique"]          { --primaire: #000091; --accent: #e1000f; }   /* bleu / rouge (par défaut) */
+[data-theme="dark"], [data-palette="republique"][data-theme="dark"] { --primaire: #8585f6; --accent: #ff6f68; }
+[data-palette="ocean"]                      { --primaire: #0b5394; --accent: #00727a; }   /* bleu océan / turquoise */
+[data-palette="ocean"][data-theme="dark"]   { --primaire: #7fb3ff; --accent: #4fd1d9; }
+[data-palette="foret"]                      { --primaire: #1e5631; --accent: #a64500; }   /* vert forêt / orange */
+[data-palette="foret"][data-theme="dark"]   { --primaire: #6fcf8f; --accent: #f59e52; }
+[data-palette="aubergine"]                  { --primaire: #5b2a86; --accent: #c2185b; }   /* violet / framboise */
+[data-palette="aubergine"][data-theme="dark"] { --primaire: #c4a1ff; --accent: #ff7aa8; }
+[data-palette="ardoise"]                    { --primaire: #334155; --accent: #0f766e; }   /* gris ardoise / vert d'eau (sobre) */
+[data-palette="ardoise"][data-theme="dark"] { --primaire: #cbd5e1; --accent: #5eead4; }
+
+/* 2b. FOND, TEXTES ET TEINTES DOUCES (calculées à partir de la palette : rien à modifier ici) */
 :root {
   --bg: #ffffff; --surface: #ffffff; --surface-alpha: rgba(255, 255, 255, .92);
   --text: #1e1e2f; --muted: #555566; --border: #e5e5ee;
-  --blue: #000091; --blue-soft: #e3e3fd;
-  --red: #e1000f;  --red-soft: #fee9e9;
+  --primaire-doux: color-mix(in srgb, var(--primaire) 11%, #fff);
+  --accent-doux: color-mix(in srgb, var(--accent) 9%, #fff);
   --on-accent: #ffffff;
-  --rgb-a: 0, 0, 145; --rgb-b: 225, 0, 15;          /* couleurs de la constellation */
   --shadow: 0 2px 10px rgba(0, 0, 60, .06);
   --shadow-hover: 0 22px 40px -12px rgba(0, 0, 60, .25);
   --radius: 1rem;
@@ -29,10 +44,9 @@
 [data-theme="dark"] {
   --bg: #11111b; --surface: #1c1c2b; --surface-alpha: rgba(28, 28, 43, .92);
   --text: #eeeef6; --muted: #b4b4c6; --border: #33334a;
-  --blue: #8585f6; --blue-soft: rgba(133, 133, 246, .14);
-  --red: #ff6f68;  --red-soft: rgba(255, 111, 104, .12);
+  --primaire-doux: color-mix(in srgb, var(--primaire) 14%, transparent);
+  --accent-doux: color-mix(in srgb, var(--accent) 12%, transparent);
   --on-accent: #11111b;
-  --rgb-a: 133, 133, 246; --rgb-b: 255, 111, 104;
   --shadow: 0 2px 10px rgba(0, 0, 0, .35);
   --shadow-hover: 0 22px 40px -12px rgba(0, 0, 0, .6);
   color-scheme: dark;
@@ -67,20 +81,18 @@ a { color: inherit; }
 button, input { font: inherit; color: inherit; }
 button { cursor: pointer; }
 svg { flex: none; }
-:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; border-radius: 6px; }
+:focus-visible { outline: 3px solid var(--primaire); outline-offset: 3px; border-radius: 6px; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-.skip { position: absolute; left: 1rem; top: -4rem; z-index: 100; padding: .5rem 1rem; border-radius: 6px; background: var(--blue); color: var(--on-accent); }
+.skip { position: absolute; left: 1rem; top: -4rem; z-index: 100; padding: .5rem 1rem; border-radius: 6px; background: var(--primaire); color: var(--on-accent); }
 .skip:focus { top: 1rem; }
 .container {
   width: 100%; max-width: 72rem; margin: 0 auto;
   padding-left: max(1.5rem, env(safe-area-inset-left)); padding-right: max(1.5rem, env(safe-area-inset-right));
 }
 
-.tricolore { height: 4px; background: linear-gradient(90deg, var(--blue) 0 33.3%, #fff 0 66.6%, var(--red) 0); }
-[data-theme="dark"] .tricolore { background: linear-gradient(90deg, var(--blue) 0 33.3%, #eeeef6 0 66.6%, var(--red) 0); }
 .progress {
   position: fixed; inset: 0 0 auto; height: 4px; z-index: 60; transform-origin: left; transform: scaleX(var(--p, 0));
-  background: linear-gradient(90deg, var(--blue) 33%, #c9c9ff 50%, var(--red) 67%);
+  background: linear-gradient(90deg, var(--primaire), var(--accent));
 }
 
 /* ---------- 5. FOND ANIMÉ (réagit à la souris et au défilement) ---------- */
@@ -95,10 +107,10 @@ svg { flex: none; }
   transition: translate .8s var(--ease), background-color .4s;
   animation: drift 26s ease-in-out infinite alternate;
 }
-.blob-a { --d: 30px; width: 35rem; height: 35rem; top: -14rem; left: -12rem; background: var(--blue-soft); opacity: .85; }
-.blob-b { --d: -40px; width: 25rem; height: 25rem; bottom: -10rem; right: -8rem; background: var(--red-soft); animation-delay: -9s; }
+.blob-a { --d: 30px; width: 35rem; height: 35rem; top: -14rem; left: -12rem; background: var(--primaire-doux); opacity: .85; }
+.blob-b { --d: -40px; width: 25rem; height: 25rem; bottom: -10rem; right: -8rem; background: var(--accent-doux); animation-delay: -9s; }
 .dots {
-  --d: 60px; position: absolute; top: 55%; right: 8%; width: 14rem; height: 14rem; border-radius: 50%; opacity: .22; color: var(--blue);
+  --d: 60px; position: absolute; top: 55%; right: 8%; width: 14rem; height: 14rem; border-radius: 50%; opacity: .22; color: var(--primaire);
   background: radial-gradient(currentColor 1.4px, transparent 1.6px) 0 0 / 14px 14px;
   translate: calc(var(--px, 0) * var(--d)) calc(var(--py, 0) * var(--d)); transition: translate .8s var(--ease);
 }
@@ -108,8 +120,8 @@ svg { flex: none; }
 .brandbar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: 1.1rem; }
 .brand { display: flex; align-items: center; gap: .9rem; text-decoration: none; min-width: 0; }
 .brand img { height: 2.9rem; width: auto; }
-.brand b { display: block; font-size: 1.25rem; color: var(--blue); }
-.brand b span { color: var(--red); }
+.brand b { display: block; font-size: 1.25rem; color: var(--primaire); }
+.brand b span { color: var(--accent); }
 .brand small { font-size: .85rem; color: var(--muted); }
 .actions { display: flex; gap: .5rem; flex: none; }
 .icon-btn {
@@ -118,10 +130,10 @@ svg { flex: none; }
   background: var(--surface); border: 1.5px solid var(--border); border-radius: 999px;
   transition: border-color .25s, background-color .25s, transform .25s var(--spring);
 }
-.icon-btn:hover { border-color: var(--blue); transform: translateY(-2px); }
+.icon-btn:hover { border-color: var(--primaire); transform: translateY(-2px); }
 .icon-btn:active { transform: scale(.94); }
 .icon-btn svg { width: 1.2rem; height: 1.2rem; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-#theme-toggle { color: var(--blue); }
+#theme-toggle { color: var(--primaire); }
 #theme-toggle svg { transition: transform .5s var(--spring), opacity .3s; }
 .i-sun, [data-theme="dark"] .i-moon { display: none; }
 [data-theme="dark"] .i-sun { display: block; }
@@ -130,13 +142,13 @@ svg { flex: none; }
 .hero { position: relative; padding: 2.5rem 0 2.75rem; text-align: center; }
 .hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 .hero-content { position: relative; opacity: calc(1 - var(--h, 0) * .7); transform: translate3d(0, calc(var(--h, 0) * 3rem), 0) scale(calc(1 - var(--h, 0) * .05)); }
-.hero h1 { font-size: clamp(1.9rem, 5vw, 3.4rem); font-weight: 700; color: var(--blue); letter-spacing: -.03em; line-height: 1.1; text-wrap: balance; }
+.hero h1 { font-size: clamp(1.9rem, 5vw, 3.4rem); font-weight: 700; color: var(--primaire); letter-spacing: -.03em; line-height: 1.1; text-wrap: balance; }
 .hero h1 span { display: inline-block; }
 .js .hero h1 span { opacity: 0; transform: translateY(.6em) rotate(3deg); animation: rise .8s var(--ease) forwards; animation-delay: calc(var(--w) * 90ms + 100ms); }
 @keyframes rise { to { opacity: 1; transform: none; } }
-.hero h1 .accent { position: relative; color: var(--red); }
+.hero h1 .accent { position: relative; color: var(--accent); }
 .accent svg { position: absolute; left: 0; bottom: -.28em; width: 100%; height: .45em; overflow: visible; }
-.accent path { fill: none; stroke: var(--red); stroke-width: 5; stroke-linecap: round; stroke-dasharray: 320; stroke-dashoffset: 320; animation: draw 1s 1s var(--ease) forwards; }
+.accent path { fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: round; stroke-dasharray: 320; stroke-dashoffset: 320; animation: draw 1s 1s var(--ease) forwards; }
 @keyframes draw { to { stroke-dashoffset: 0; } }
 .hero p { max-width: 34rem; margin: 1.1rem auto 1.6rem; font-size: 1.08rem; color: var(--muted); text-wrap: pretty; }
 
@@ -147,7 +159,7 @@ svg { flex: none; }
   transition: border-color .25s, box-shadow .25s, background-color .4s; -webkit-appearance: none; appearance: none;
 }
 .search input::placeholder { color: var(--muted); opacity: 1; }
-.search input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 5px rgba(var(--rgb-a), .15); }
+.search input:focus { outline: none; border-color: var(--primaire); box-shadow: 0 0 0 5px color-mix(in srgb, var(--primaire) 15%, transparent); }
 .search svg { position: absolute; left: 1.05rem; top: 50%; translate: 0 -50%; width: 1.1rem; height: 1.1rem; fill: none; stroke: var(--muted); stroke-width: 2.2; }
 
 /* ---------- 7. MENU DES CATÉGORIES ---------- */
@@ -232,7 +244,7 @@ svg { flex: none; }
 .empty, .soon { text-align: center; color: var(--muted); }
 .empty { padding: 3rem 1rem; }
 .soon { margin-top: 3rem; font-size: .95rem; }
-.soon::before { content: ""; display: inline-block; width: .5rem; height: .5rem; margin-right: .5rem; vertical-align: middle; border-radius: 50%; background: var(--red); animation: pulse 2s ease-in-out infinite; }
+.soon::before { content: ""; display: inline-block; width: .5rem; height: .5rem; margin-right: .5rem; vertical-align: middle; border-radius: 50%; background: var(--accent); animation: pulse 2s ease-in-out infinite; }
 @keyframes pulse { 50% { transform: scale(1.7); opacity: .35; } }
 
 .footer { padding: 1.5rem max(1.5rem, env(safe-area-inset-right)) max(1.5rem, env(safe-area-inset-bottom)); text-align: center; font-size: .88rem; color: var(--muted); border-top: 1px solid var(--border); background: var(--surface-alpha); }
@@ -248,7 +260,7 @@ dialog::backdrop { background: rgba(10, 10, 40, .45); backdrop-filter: blur(3px)
 @keyframes pop { from { opacity: 0; transform: translateY(1rem) scale(.95); } }
 .settings { display: grid; gap: 1.25rem; padding: 1.5rem; }
 .settings-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
-.settings h2 { font-size: 1.2rem; color: var(--blue); }
+.settings h2 { font-size: 1.2rem; color: var(--primaire); }
 fieldset { border: 0; }
 legend { margin-bottom: .5rem; font-size: .9rem; font-weight: 700; }
 .seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: .25rem; padding: .25rem; border-radius: .9rem; background: var(--bg); border: 1px solid var(--border); }
@@ -259,20 +271,20 @@ legend { margin-bottom: .5rem; font-size: .9rem; font-weight: 700; }
   font-size: .88rem; font-weight: 700; border-radius: .7rem; cursor: pointer; transition: background-color .25s, color .25s;
 }
 .seg .t115 { font-size: 1rem; } .seg .t130 { font-size: 1.12rem; }
-.seg span:hover { background: var(--blue-soft); }
-.seg input:checked + span { background: var(--blue); color: var(--on-accent); }
-.seg input:focus-visible + span, .switch input:focus-visible + span::before { outline: 3px solid var(--blue); outline-offset: 2px; }
+.seg span:hover { background: var(--primaire-doux); }
+.seg input:checked + span { background: var(--primaire); color: var(--on-accent); }
+.seg input:focus-visible + span, .switch input:focus-visible + span::before { outline: 3px solid var(--primaire); outline-offset: 2px; }
 .switch { display: flex; align-items: center; min-height: 2.75rem; font-weight: 700; font-size: .95rem; cursor: pointer; }
 .switch span { display: flex; align-items: center; gap: .75rem; }
 .switch span::before {
   content: ""; flex: none; width: 2.75rem; height: 1.6rem; border-radius: 999px; background: var(--border);
   background-image: radial-gradient(circle at 0.8rem 50%, #fff .6rem, transparent .62rem); transition: background-color .25s, background-position .3s var(--spring);
 }
-.switch input:checked + span::before { background-color: var(--blue); background-position: 1.15rem 0; }
-.install { padding: 1rem; border-radius: .9rem; background: var(--blue-soft); font-size: .9rem; display: grid; gap: .75rem; }
+.switch input:checked + span::before { background-color: var(--primaire); background-position: 1.15rem 0; }
+.install { padding: 1rem; border-radius: .9rem; background: var(--primaire-doux); font-size: .9rem; display: grid; gap: .75rem; }
 .install[hidden], .install [hidden] { display: none; }
 .settings-foot { display: flex; justify-content: flex-end; gap: .5rem; flex-wrap: wrap; }
-.btn { min-height: 2.75rem; padding: .5rem 1.2rem; font-weight: 700; border: 0; border-radius: 999px; background: var(--blue); color: var(--on-accent); transition: transform .25s var(--spring); }
+.btn { min-height: 2.75rem; padding: .5rem 1.2rem; font-weight: 700; border: 0; border-radius: 999px; background: var(--primaire); color: var(--on-accent); transition: transform .25s var(--spring); }
 .btn:hover { transform: translateY(-2px); }
 .btn-ghost { background: transparent; color: var(--text); border: 1.5px solid var(--border); }
 

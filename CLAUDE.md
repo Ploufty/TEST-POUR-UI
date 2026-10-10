@@ -133,13 +133,29 @@ Dans `index.html` :
 
 Pour le logo : déposer `logo.png` à la racine, décommenter la ligne `<img src="logo.png">` dans `index.html`, puis lancer `npm run generer` (le logo est alors ajouté au hors ligne).
 
-### Changer les couleurs, la police ou l'aspect
+### Changer les couleurs du site (palettes)
+Le site a deux couleurs principales : **primaire** (titres, boutons, liens actifs) et **accent** (mots en couleur, détails).
+Elles viennent d'une **palette**, choisie par un seul mot dans `index.html` :
+```html
+<html lang="fr" data-palette="republique" …>
+```
+Palettes prêtes (définies dans `style.css`, section 2a) : `republique` (bleu/rouge, par défaut), `ocean`, `foret`, `aubergine`, `ardoise`.
+Toutes sont vérifiées AA en clair et en sombre. Les teintes douces (formes du fond, survols, encadrés) et la constellation sont calculées automatiquement.
+
+**Créer une palette :** copier les deux lignes d'une palette dans `style.css` (section 2a), changer le nom et les 4 couleurs
+(primaire et accent en clair, puis en sombre), puis mettre ce nom dans `data-palette`.
+Contraste exigé : au moins 4,5:1 sur blanc pour les couleurs claires, et sur `#1c1c2b` pour les couleurs sombres.
+Penser aussi à `theme_color` dans `manifest.webmanifest` (couleur de l'application installée).
+
+Les **couleurs des catégories** sont indépendantes : elles se choisissent dans `Outils/categories.json` (voir plus haut).
+
+### Changer la police ou l'aspect
 Tout est dans `style.css`, découpé en 11 sections numérotées :
 
 | Section | Contenu |
 |---|---|
 | 1 | Police Marianne (chargée depuis le paquet officiel du DSFR sur jsDelivr) |
-| 2 | **Thème** : toutes les couleurs en variables (`:root` = clair, `[data-theme="dark"]` = sombre, `[data-contrast="high"]` = contraste renforcé) |
+| 2 | **Palettes et thème** : 2a = palettes du site (`--primaire`, `--accent`) ; 2b = fond, textes et teintes douces (`:root` = clair, `[data-theme="dark"]` = sombre, `[data-contrast="high"]` = contraste renforcé) |
 | 3 | Couleurs des catégories |
 | 4 | Base (typographie, liens, focus clavier, conteneur) |
 | 5 | Fond animé (formes, points ; réagit à la souris `--px/--py` et au défilement `--s`) |
@@ -221,7 +237,7 @@ Pour tester l'installation et le hors ligne, il faut passer par `npm run apercu`
 - **Langue :** interface, messages, commentaires et documentation en **français**. Commits en anglais, avec les lignes d'attribution demandées.
 - **Aucune dépendance npm.** Les scripts n'utilisent que Node.js et le site n'utilise que des fichiers statiques. Ne pas réintroduire d'étape de compilation : le principe est « ouvrir `index.html` = voir la page ».
 - **Ne jamais modifier `outils.js` à la main.** Après toute modification de `Outils/`, du script du `<head>` ou des fichiers de l'accueil, lancer `npm run generer` et commiter les fichiers qu'il a modifiés.
-- **Style du code :** CSS par variables et sections numérotées ; JS en une seule fonction autonome, sans bibliothèque ; échapper tout texte injecté ; pas de gestionnaire d'événement dans le HTML (CSP).
+- **Style du code :** CSS par variables et sections numérotées ; couleurs du site uniquement via `var(--primaire)` / `var(--accent)` (jamais de couleur écrite en dur) ; JS en une seule fonction autonome, sans bibliothèque ; échapper tout texte injecté ; pas de gestionnaire d'événement dans le HTML (CSP).
 - **Accessibilité à maintenir :** contraste AA, zones tactiles d'au moins 44 px, focus visible, `aria-label` sur les boutons-icônes, respect de `prefers-reduced-motion` et de `[data-motion="reduce"]`.
 - **Vérifier avant d'envoyer :**
   1. `node --check` sur chaque fichier JS modifié ;
@@ -243,3 +259,4 @@ Pour tester l'installation et le hors ligne, il faut passer par `npm run apercu`
 | v3 | Compilation pour la Forge (abandonnée) |
 | v4 | « Un outil = un dossier dans `Outils/` » avec une fiche `outil.json`, et contrôle de sécurité |
 | **Clean** | Page directement à la racine sans compilation, `outils.js` généré automatiquement, zéro dépendance |
+| Clean (suite) | Bandeau bleu-blanc-rouge retiré ; couleurs du site en palettes interchangeables (`data-palette`) |
