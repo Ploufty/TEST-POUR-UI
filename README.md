@@ -42,6 +42,11 @@ Sans Node.js : il suffit d'envoyer sur GitHub, la mise à jour se fait en ligne 
 Dans `index.html`, remplacer `data-palette="republique"` par `ocean`, `foret`, `aubergine` ou `ardoise`.
 Pour créer sa propre palette : voir `CLAUDE.md`, section « Changer les couleurs du site ».
 
+## Réutiliser l'interface dans d'autres projets
+
+`CHARTE-UI.md` décrit toute l'interface (couleurs, typographie, composants, animations, accessibilité).
+La déposer dans un nouveau projet et demander à Claude de l'appliquer, ou l'installer comme skill (mode d'emploi dans le fichier).
+
 ## Publication
 
 - **GitHub Pages** : Settings › Pages › *Deploy from a branch* › **main** (ou **Clean** dans le dépôt de test) / (root).

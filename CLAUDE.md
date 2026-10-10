@@ -47,6 +47,7 @@ scripts/                Outils de maintenance (Node.js, sans dépendance)
 .gitlab/                            Modèles de ticket et de demande de fusion « Nouvel-outil »
 README.md                           Présentation courte
 IMPORTER-DANS-UN-NOUVEAU-DEPOT.md   Tutoriel : créer un nouveau dépôt à partir du zip
+CHARTE-UI.md                        Charte d'interface à réutiliser dans les autres projets (aussi utilisable comme skill Claude)
 AJOUTER-UN-OUTIL.md                 Tutoriel pour les collègues (sans connaissances techniques)
 CLAUDE.md                           Ce guide (lu automatiquement par Claude Code)
 ```
@@ -237,6 +238,7 @@ Pour tester l'installation et le hors ligne, il faut passer par `npm run apercu`
 - **Langue :** interface, messages, commentaires et documentation en **français**. Commits en anglais, avec les lignes d'attribution demandées.
 - **Aucune dépendance npm.** Les scripts n'utilisent que Node.js et le site n'utilise que des fichiers statiques. Ne pas réintroduire d'étape de compilation : le principe est « ouvrir `index.html` = voir la page ».
 - **Ne jamais modifier `outils.js` à la main.** Après toute modification de `Outils/`, du script du `<head>` ou des fichiers de l'accueil, lancer `npm run generer` et commiter les fichiers qu'il a modifiés.
+- **Interface :** toute modification visuelle doit rester conforme à `CHARTE-UI.md` (et la charte doit être mise à jour si le design évolue).
 - **Style du code :** CSS par variables et sections numérotées ; couleurs du site uniquement via `var(--primaire)` / `var(--accent)` (jamais de couleur écrite en dur) ; JS en une seule fonction autonome, sans bibliothèque ; échapper tout texte injecté ; pas de gestionnaire d'événement dans le HTML (CSP).
 - **Accessibilité à maintenir :** contraste AA, zones tactiles d'au moins 44 px, focus visible, `aria-label` sur les boutons-icônes, respect de `prefers-reduced-motion` et de `[data-motion="reduce"]`.
 - **Vérifier avant d'envoyer :**
